@@ -75,29 +75,35 @@ dd {
     color: gray;
     width: 100%;
     height: auto;
+      text-align: center;
+
     margin-bottom: 4vh;
 }
 
-input, button {
-    margin: 0 1em;
-    padding: .5em;
+.inputActivity{
+    width: 28%;
+    height: auto;
+}
+.inputActivity, #addButtonId {
+    margin: 1em;
+    padding: 0.5em;
 }
 
-input:first-of-type {
+.inputActivity:first-of-type {
     -webkit-box-flex: 1;
     -webkit-flex-grow: 1;
         -ms-flex-positive: 1;
             flex-grow: 1;
 }
 
-input:last-of-type {
+.inputActivity:last-of-type {
     -webkit-box-flex: 4;
     -webkit-flex-grow: 4;
         -ms-flex-positive: 4;
             flex-grow: 4;
 }
 
-button {
+#addButtonId {
     -webkit-box-flex: 1;
     -webkit-flex-grow: 1;
         -ms-flex-positive: 1;
@@ -106,8 +112,10 @@ button {
     outline: none;
     border: solid 1px;
     color: white;
+    width: 13%;
+    height: auto;
 }
 
-button:hover {
+#addButtonId:hover {
     color: yellow;
 }
