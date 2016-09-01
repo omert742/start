@@ -38,27 +38,27 @@ app.get('/', function(request, response) {
   response.render('public/index');
 });
 
-//app.use(function(req, res, next) {
-//	console.log(`${req.method} request for '${req.url}' - ${JSON.stringify(req.body)}`);
-//	next();
-//});
-//
-//app.get("/dictionary-api", function(req, res) { // router that open 
-//	res.json(skierTerms); // json the skierTerms
-//});
-//
-//app.post("/dictionary-api", function(req, res) { // handle post for that page 
-//    skierTerms.push(req.body); // add the the array the req.push(data we got);
-//    res.json(skierTerms);    // reload the data
-//});
-//
-//app.delete("/dictionary-api/:termx", function(req, res) { // on delete 
-//    skierTerms = skierTerms.filter(function(definition) { 
-//        return definition.termx.toLowerCase() !== req.params.termx.toLowerCase(); // if the request is data term so delete
-//    });
-//    res.json(skierTerms); // reload
-//});
-//
+app.use(function(req, res, next) {
+	console.log(`${req.method} request for '${req.url}' - ${JSON.stringify(req.body)}`);
+	next();
+});
+
+app.get("/dictionary-api", function(req, res) { // router that open 
+	res.json(skierTerms); // json the skierTerms
+});
+
+app.post("/dictionary-api", function(req, res) { // handle post for that page 
+    skierTerms.push(req.body); // add the the array the req.push(data we got);
+    res.json(skierTerms);    // reload the data
+});
+
+app.delete("/dictionary-api/:termx", function(req, res) { // on delete 
+    skierTerms = skierTerms.filter(function(definition) { 
+        return definition.termx.toLowerCase() !== req.params.termx.toLowerCase(); // if the request is data term so delete
+    });
+    res.json(skierTerms); // reload
+});
+
 
 
 app.listen(app.get('port'), function() {
