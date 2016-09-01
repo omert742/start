@@ -1,29 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>Node Learning</title>
 
     <meta name="viewport" content="minimum-scale=1.0, width=device-width, maximum-scale=1.0, user-scalable=no"/>
     <meta charset="utf-8">
-
-    <title>Skier Dictionary</title>
-
+<!--    javascript-->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/dictionary.js"></script>
+    <script src="/js/script.js"></script>
+<!--    css-->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/style.css"/>
 
 </head>
 <body>
-
-    <h1>Skier Dictionary</h1>
-    <dl></dl>
-    <p>Dictionary Empty</p>
-
-    <form>
-        <input type="text" id="term" name="term" placeholder="new term..." required />
-        <input type="Text" name="defined" id="defined" placeholder="new definition..." required />
+    <form id="addText">
+        <input type="text" name="name" id="name_activity"  placeholder="New activity..." required />
+        <input type="Text" name="activity_description" id="activity_description"  placeholder="New activity description..." required />
         <button>Add Term</button>
     </form>
 
-    <script src="/js/jquery.min.js"></script>
-    <script src="/js/dictionary.js"></script>
+    <h1>Dictionary</h1>
+    <dl></dl>
+    <p>Dictionary Empty</p>
+
+
+
 
 </body>
 </html>

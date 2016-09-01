@@ -16,6 +16,7 @@
   "dependencies": {
     "body-parser": "^1.14.1",
     "cors": "^2.7.1",
+    "easyjson": "^0.1.2",
     "express": "^4.13.3"
   }
 }

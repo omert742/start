@@ -70,18 +70,12 @@ dd {
     font-size: 1em;
 }
 
-form {
+#addText {
     background-color: darkslateblue;
-    color: white;
-    padding: 1em;
-    width: 80%;
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-justify-content: space-around;
-        -ms-flex-pack: distribute;
-            justify-content: space-around;
+    color: gray;
+    width: 100%;
+    height: auto;
+    margin-bottom: 4vh;
 }
 
 input, button {
