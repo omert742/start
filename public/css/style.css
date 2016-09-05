@@ -13,6 +13,7 @@ h1 {
 }
 
 body {
+/*
     display: -webkit-box;
     display: -webkit-flex;
     display: -ms-flexbox;
@@ -26,34 +27,37 @@ body {
     -webkit-justify-content: flex-start;
         -ms-flex-pack: start;
             justify-content: flex-start;
+*/
+/*
     -webkit-box-align: center;
     -webkit-align-items: center;
         -ms-flex-align: center;
             align-items: center;
+*/
 }
 
-dl {
-
+#mainDataBox {
+    float: right;
     border: double;
     padding: 1em;
     display: block;
-    width: 80%;
+    width: 73vw;
 }
 
-dl + p {
+#mainDataBox + p {
     display: none;
 }
 
-dl:empty {
+#mainDataBox:empty {
     display: none;
 }
 
-dl:empty + p {
+#mainDataBox:empty + p {
     color: red;
     display: block;
 }
 
-dt:hover {
+#mainDataBox:hover {
     color: red;
     cursor: pointer;
 }
@@ -75,10 +79,28 @@ dd {
     color: gray;
     width: 100%;
     height: auto;
-      text-align: center;
-
-    margin-bottom: 4vh;
+    text-align: center;
 }
+
+#register {
+        display: inline-block;
+    background-color: dimgray;
+    color: gray;
+    height: auto;
+    width: 25vw;
+    text-align: center;
+    margin-bottom: 4vh;
+    float: left;
+            padding: 1em;
+
+}
+
+.inputIdPass{
+        width: 100%;
+        margin-bottom: 5%;
+    
+}
+
 
 .inputActivity{
     width: 28%;
