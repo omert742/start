@@ -1,1 +1,37 @@
-{"users":[{"username":"omert742","password":"ot123321","MyActivitys":[{"nameActivity":"omer","Activity":"tamir"}]},{"username":"omert747","password":"ot123321","MyActivitys":[{"nameActivity":"adiel","Activity":"ravid"},{"nameActivity":"adiel2","Activity":"ravid3"}]}]}
+{
+        "users":[
+
+
+        {
+            "username":"omert742","password":"ot123321"
+            ,"MyActivitys": [
+                                {"nameActivity": "adiel",
+                                "Activity": "ravid"
+                                },
+                                {"nameActivity": "adiel2",
+                                "Activity": "ravid3"
+                                }
+                            ]
+              
+        }
+
+            
+            
+        ,{
+            "username":"omert747","password":"ot123321"
+            ,"MyActivitys": [
+                                {"nameActivity": "adiel",
+                                "Activity": "ravid"
+                                },
+                                {"nameActivity": "adiel2",
+                                "Activity": "ravid3"
+                                }
+                            ]
+              
+        }    
+
+
+
+
+    ]
+}
