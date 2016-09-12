@@ -6,19 +6,27 @@ NodeAngularApp.config(function($routeProvider,$locationProvider){
              
 $routeProvider
 .when('/',{
-    templateUrl: 'login.html',
+    templateUrl: 'sites/login.html',
     controller: 'mainController'
 })
 .when('/register',{
-    templateUrl: 'register.html',
+    templateUrl: 'sites/register.html',
     controller: 'mainController'
 })
 .when('/login',{
-    templateUrl: 'login.html',
+    templateUrl: 'sites/login.html',
     controller: 'mainController'
 })
-.when('/add',{
-        templateUrl: 'add.html',
+.when('/add_file',{
+        templateUrl: 'sites/add_file.html',
+        controller: 'secondController'
+})
+.when('/showdictionary',{
+        templateUrl: 'sites/dictionary.html',
+        controller: 'secondController'
+})
+.when('/panel',{
+        templateUrl: 'sites/panel.html',
         controller: 'secondController'
 })
 

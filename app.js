@@ -20,50 +20,47 @@ var userIndex = 0;
 var skierTerms = [
  
 ]; // my activitys
-var flagChecker = [2,2] ; // check if user exists // check registerison [0 = exists]
-
-
-
+var flagChecker = [2,2,0] ; // check if user exists // check registerison [0 = exists] 
+                            // check if file added [0 == not]
 
 
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
-
 app.get('/', function(request, response) {
     response.render('public/login.html');
 });
-
-app.get('/public/add.html', function(request, response) {
-    response.render('public/add.html');
+app.get('/public/sites/add_file.html', function(request, response) {
+    response.render('public/sites/add_file.html');
+});
+app.get('/public/sites/login.html', function(request, response) {
+    response.render('public/sites/login.html');
 });
 
-app.get('/public/login.html', function(request, response) {
-    response.render('public/login.html');
+app.get('/public/sites/panel.html', function(request, response) {
+    response.render('public/sites/panel.html');
 });
-
-
+app.get('/public/sites/showdictionary.html', function(request, response) {
+    response.render('public/sites/dictionary.html');
+});
 app.use(function(req, res, next) {
 	console.log(`${req.method} request for '${req.url}' - ${JSON.stringify(req.body)}`);
+    	console.log("userIndex "+userIndex);
+
 	next();
 });
-
 app.post("/dictionary-api", function(req, res) { // router that open 
     append_new_Object(req.body);
 });
-
 app.get("/dictionary-api", function(req, res) { // router that open 
-        console.log("On Get API");
 
-            fs.readFile('public/activity-data.json', 'utf8', function (err, data) {  
+    fs.readFile('public/activity-data.json', 'utf8', function (err, data) {  
             skierTerms = [];
-            obj = JSON.parse(data);
+            var obj = JSON.parse(data);
             obj = obj.users[userIndex].MyActivitys;
             obj.forEach(function(everyObject) { 
                 skierTerms.push({nameActivity: everyObject.nameActivity, Activity: everyObject.Activity}); 
             });
-                        console.log("On get sk")+skierTerms;
-
                     res.json(skierTerms); 
 
         });
@@ -71,11 +68,10 @@ app.get("/dictionary-api", function(req, res) { // router that open
 
 
 });
-
 app.delete("/dictionary-api/:nameActivity", function(req, res) { // on delete 
     var valueToDel = req.params.nameActivity;
     var posion = 0 ;
-
+    var flag = 0 ;
     skierTerms = skierTerms.filter(function(definition) {
         return definition.nameActivity.toLowerCase() !== req.params.nameActivity.toLowerCase(); // if the request is data term so delete
     });
@@ -88,7 +84,7 @@ app.delete("/dictionary-api/:nameActivity", function(req, res) { // on delete
                 if(req.params.nameActivity.toLowerCase() == everyObject.nameActivity.toLowerCase())
                   {
                    posion = flag ;
-                   }
+                  }
     });
         
     delete obj2[posion]
@@ -99,15 +95,9 @@ app.delete("/dictionary-api/:nameActivity", function(req, res) { // on delete
     });
     res.json(skierTerms); // reload
 });
-
-app.get("/login", function(req, res) { // router that open 
-    
-        
-    
+app.get("/resultArray", function(req, res) { // router that open 
     res.json(flagChecker);
-
 });
-
 app.post("/login", function(req, res) { // handle post for that page 
     
     LoginFunc(req.body);
@@ -117,28 +107,20 @@ app.post("/login", function(req, res) { // handle post for that page
 
 
 });
-
 app.post("/register", function(req, res) { // handle post for that page 
             
             newMember(req.body);
 });
 
-
-app.get("/register", function(req, res) { // router that open 
-    
-        
-    
-    res.json(flagChecker);
-
+app.post("/append_new_file", function(req, res) { // handle post for that page 
+            append_new_file(req.body);
 });
-
 
 
 
 
 function LoginFunc(Get_req_body){
             flagChecker[0] = 2 ;
-        console.log("On Login Post : "+ flagChecker[0] );
         var Get_username = Get_req_body.username.toLowerCase();
             var Get_password = Get_req_body.password.toLowerCase();
     
@@ -151,7 +133,7 @@ function LoginFunc(Get_req_body){
                 {
                        if(Get_username.trim() === obj[i].username.trim() && Get_password === obj[i].password.trim() )
                         {
-                            console.log("i am In");
+                            userIndex = i ;
                             flagChecker[0] = 1 ; // the object are exists
                            run = 0 ;
 
@@ -182,6 +164,30 @@ function delete_object(num){
     
     
 }
+
+function append_new_file(new_obj){
+
+    fs.readFile('public/activity-data.json', 'utf8', function (err, data) {  
+        var obj = JSON.parse(data); // data 
+        var obj2 = obj.users[userIndex].MyFiles;
+        obj2.push(new_obj);
+        var configJSON2 = JSON.stringify(obj);
+
+        
+     fs.writeFile('public/activity-data.json', configJSON2, (err) => {
+          if (err){
+               throw err;
+              flagChecker[2]=0;
+          }
+               flagChecker[2]=1;
+
+        });
+        
+        });
+
+
+}
+
 function append_new_Object(new_obj){
     
     fs.readFile('public/activity-data.json', 'utf8', function (err, data) {  
@@ -205,7 +211,6 @@ function append_new_Object(new_obj){
 function updateData(new_obj){
           fs.readFile('public/activity-data.json', 'utf8', function (err, data) {  
             var obj = JSON.parse(data); // data 
-                          console.log("\n\n\n Console : "+obj+"\n\n\n")
 
             obj.users.forEach(function(everyObject,callback) { 
                 
@@ -231,14 +236,10 @@ function newMember(new_obj){
              var run = 1 ;
             for(var i = 0 ; i<obj.users.length && run == 1; i++)
                 {   
-                        console.log("\n\n\n");
-                        console.log("new_obj.username : "+new_obj.username);
-                        console.log("obj.users[i].username"+obj.users[i].username);
-                        console.log("\n\n\n");
+ 
                         
                        if(new_obj.username.trim() === obj.users[i].username.trim() && new_obj.password === obj.users[i].password.trim() )
                         {
-                            console.log("i am In");
                             flagChecker[1] = 1 ; // the object are exists
                            run = 0 ;
 
@@ -268,15 +269,7 @@ function newMember(new_obj){
              
                 });
                 }
-//            if(flagChecker[1] == 1){
-//                    var exmapleObj = obj.users[userIndex];
-//                    if(flagChecker[1]==1){//if user is allready exists
-//
-//                }
-//            }
-//            else{
-//              flagChecker[1] = 0;  
-//            }
+
      });
 
         }

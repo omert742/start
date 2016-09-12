@@ -12,6 +12,7 @@ h1 {
     color: darkblue;
 }
 
+
 body {
     
     background-image: url("bodyimg.jpg");
@@ -43,7 +44,8 @@ body {
     border: double;
     padding: 1em;
     display: block;
-    width: 73vw;
+    margin-right: 10vw;
+    width: 75vw;
 }
 
 #mainDataBox + p {
@@ -81,7 +83,6 @@ dd {
     color: gray;
     width: 100%;
     height: auto;
-    text-align: center;
     border: 1vh solid white;
     border-radius: 1%;
     padding: 3%; 
@@ -151,4 +152,13 @@ dd {
 
 #addButtonId:hover {
     color: darkblue;
+}
+
+
+
+#middleDiv{
+    float: left;
+    margin-left: 400px;
+    background: black;
+    text-align: center;
 }
