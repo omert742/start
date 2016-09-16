@@ -1,0 +1,19 @@
+{
+  "name": "myFirstApp",
+  "version": "1.0.0",
+  "description": "my first app on node and angular so i am still learning",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Omer Tamir",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.6.1",
+    "body-parser": "^1.14.1",
+    "consolidate": "^0.14.1",
+    "cors": "^2.7.1",
+    "easyjson": "^0.1.2",
+    "express": "^4.13.3"
+  }
+}

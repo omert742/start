@@ -1,0 +1,40 @@
+<!--    javascript-->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/scriptAngular.js"></script>
+
+<!--    css-->
+
+    <link rel="stylesheet" href="/css/style.css"/>
+
+ <nav class="navbar navbar-inverse">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#/panel">Menu</a>
+        </div>
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="#/login">Logout</a></li>
+          <li><a href="#/showdictionary">My Activitys</a></li>
+          <li><a href="#/add_file">Add files</a></li>
+          <li><a href="#/show_files">Show my files</a></li>
+          <li><a href="#/online_chat">Online Chat</a></li>
+            
+
+        </ul>
+      </div>
+     </nav>
+
+     
+    <div id="ChatArea"> 
+     <h1>Websocket</h1>
+<div class="messages"></div>
+<form action="javascript:void(0)">
+    <label for="message">&gt;</label>
+    <input type="text" id="message" required autofocus />
+</form>
+<script src="js/socket.io-client.min.js"></script>
+<script src="js/main.js"></script>
+        </div>
+
+        
+
+

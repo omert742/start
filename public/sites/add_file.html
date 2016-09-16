@@ -1,6 +1,5 @@
 <!--    javascript-->
     <script src="/js/jquery.min.js"></script>
-    <script src="/js/client-side.js"></script>
     <script src="/js/scriptAngular.js"></script>
 <!--    css-->
 
@@ -14,19 +13,48 @@
         </div>
         <ul class="nav navbar-nav">
           <li class="active"><a href="#/login">Logout</a></li>
-          <li><a href="#/add_file">Add File</a></li>
-          <li><a href="#/showdictionary">Dictionary</a></li>
+          <li><a href="#/showdictionary">My Activitys</a></li>
+          <li><a href="#/add_file">Add files</a></li>
+          <li><a href="#/show_files">Show my files</a></li>
+          <li><a href="#/online_chat">Online Chat</a></li>
+
 
         </ul>
       </div>
      
 </nav>
     
-    <br><br><br><br><br><br>
-    <div class="middle">
-        <dt> Add New File </dt>
-<input type="file" id="myFiles" multiple size="50" onchange="readFile()">
-     
-<p id="fileData"></p>
+
+
         
-        </div>  
+
+
+
+<div id="addFilesBox" class="container">
+ <dt> Add New File </dt>
+<!--<input value="Choose Files" type="file" id="myFiles" multiple size="50" /> -->
+<h3>File Name :</h3>
+<input  class="inputIdPass" type="type" onchange="checkOnChange()" value="" id="fileName" placeholder="Enter File Name" required /> 
+<button onclick="checkFileNameExists()">Check If File Name Excists</button>    
+<h3>File Path :</h3>
+<input class="inputIdPass" type="type" id="filePath" placeholder="Enter File Path" required/> 
+<!--<img id="addImage" src="" height="auto" alt="Image preview...">-->
+
+        
+<!--<p id="fileData"></p> <br>-->
+<button id="BtnUploadFile" class="inputIdPass" style="background:#Ff2141; color:white" disabled onclick="UploadFile()">Upload</button>
+    
+    
+    <div id="myProgress">
+  <div id="myBar"></div>
+</div>
+    <br><br><br>
+<!--
+    
+  <h2>Upload File Progress Bar</h2>
+  <div class="progress">
+    <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+      <span class="sr-only">70% Complete</span>
+    </div>
+-->
+  </div>
