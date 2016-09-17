@@ -20,10 +20,13 @@ var userIndex = 2;
 var skierTerms = [
  
 ]; // my activitys
-var flagChecker = [2,2,0,0,-1] ; // check if user exists // check registerison [0 = exists] 
-                            // check if file added [0 == not] // check if filed send to the server
+var flagChecker = [2,2,0,0,-1,0] ; 
+                            // [0] = check if user exists 
+                            // [1] = check registerison [0 = exists] 
+                            // [2] = check if file added [0 == not] 
+                            // [3] = check if filed send to the server
                             // [4] = index of User number;
-
+                            // [5] = file exists on the computer
 
 var AWS = require('aws-sdk'); 
 AWS.config.update({region: 'eu-west-1'});
@@ -83,13 +86,15 @@ app.get("/get_my_links", function(req, res) { // router that open
                    var my_links = [];
         var obj = JSON.parse(data); // data 
         obj = obj.users[userIndex].MyFiles;
+           
+        if(obj.length >= 1){
          obj.forEach(function(everyObject,callback) {       
             var new_file_save = { fileName: everyObject.fileName, fileUrl: everyObject.fileUrl};
              my_links.push(new_file_save);
             });   
-           
+        }
                    res.json(my_links);
-
+        
        });
     
     
@@ -121,6 +126,11 @@ app.post("/register", function(req, res) { // handle post for that page
 app.post("/updateUserIndex", function(req, res) { // handle post for that page 
             
             userIndex = req.body.userIndex;
+});
+
+app.post("/delete_file", function(req, res) { // handle post for that page 
+                                console.log("here");
+            deleteFile(req.body);
 });
 
 
@@ -324,7 +334,6 @@ function checkFileExists(req){
             allKeys.push(everyObject.Key);
             });
             }
-         //   uploadFileIfNeeded(req,flag);
             if(a==1){
     
               flagChecker[3] = 1 ;
@@ -342,23 +351,109 @@ function checkFileExists(req){
 
 }
 
+function deleteFile(deleted_obj)
+{
+var BUCKET = 'omta-firstapp';
+var s3 = new AWS.S3();
+
+var params = {
+  Bucket: 'omta-firstapp', 
+  Delete: { // required
+    Objects: [ {
+        Key: 'LoveImage' // required
+      } ],
+  },
+};
+   
+    params.Delete.Objects[0] = deleted_obj;
+        var configJSON2 = JSON.stringify(params);
+console.log(configJSON2)
+
+s3.deleteObjects(params, function(err, data) {
+  if (err){
+      console.log(err, err.stack); // an error occurred
+  }else{
+       console.log(data);  
+      remove_fromjson_file(deleted_obj);
+  }            // successful response
+});
+}
 
 function uploadFileIfNeeded(req){
-        var body = fs.createReadStream(req.body.data);
+    
+fs.stat(req.body.data, function(err, stat) {
+    if(err == null) {
+    //    console.log('File exists');
+        flagChecker[5] = 1;
+            var body = fs.createReadStream(req.body.data);
         var s3obj = new AWS.S3({params: {Bucket: 'omta-firstapp', Key: req.body.fileName}});
+
+              var configJSON2 = JSON.stringify(body);
+
+            console.log("cUpLoad File")
         s3obj.upload({Body: body}).
           on('httpUploadProgress',function(evt){
            // console.log(evt); 
         }).send(function(err, data) { 
+                        console.log("upload");
+
           //  console.log(err, data);
         });
-            append_new_file(req.body.fileName);
-        }
+         append_new_file(req.body.fileName);    
+        
+    } else if(err.code == 'ENOENT') {
+       // console.log('File do not exists');
+
+        
+    } else {
+     //   console.log('Some other error: ', err.code);
+    }
+});
+    
+
+
+     
+}
         
       
     
+function remove_fromjson_file(deleted_obj){
+    var file_name = deleted_obj.Key;
 
+    fs.readFile('public/activity-data.json', 'utf8', function (err, data) {  
+        var obj = JSON.parse(data); // data 
+        var obj2 = obj.users[userIndex].MyFiles;
+        var runThisFor = 1;
+        var indexToDel = -1;
+        
+          var configJSON = JSON.stringify(obj2);
+            console.log("configJSON" +configJSON);
+         for(var i = 0 ; i<obj2.length && runThisFor == 1; i++){
+             
+                     console.log("for : ");
+                     console.log("obj2.fileName  :"+obj2[i].fileName );
+                     console.log("deleted_obj.Key : "+deleted_obj.Key);
+
+             if(obj2[i].fileName == deleted_obj.Key){
+                     runThisFor = 0 ;
+                     indexToDel = i;
+                         console.log("in :"+indexToDel);
+
+                 }
+         }
+           
+   
+        
+        console.log("indexToDel :"+indexToDel);
+        
+    delete obj2[userIndex]
+    obj2.splice(userIndex,1);
+    var configJSON = JSON.stringify(obj);
+    fs.writeFileSync('public/activity-data.json', configJSON);
     
+    });
+
+}   
 
 
 function append_new_file(req){
@@ -380,6 +475,12 @@ function append_new_file(req){
         });
         
         });
+    
+    
+    
+    
+ 
+    
 
 }
 

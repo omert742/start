@@ -173,10 +173,29 @@ function showFilesF(){
                         var t = document.createTextNode("Delete File");    
                         deleteBtn.appendChild(t);
                         deleteBtn.onclick = function () {
-                            console.log("delete");
+                            $("addFilesBox").empty();
+                            $.post('/delete_file', {Key: everyObject.fileName});
+                            var my_dialog = document.getElementById('show_dialog');
+                              my_dialog.className = 'alert alert-info'; 
+                                my_dialog.innerHTML = 'Deleting File...';
+                                my_dialog.style.visibility = "visible";
+                   
+                            
+                              setTimeout(function() {
+                                    my_dialog.style.visibility = "hidden";
+                                     window.location = '/#/panel'
+                                setTimeout(function() {
+                                    window.location = '/#/show_files'
+
+                                }, 200);
+
+                                }, 1000);
+                            
+                               
+
                         };  
                             
-                            
+ 
                         var newItem = document.createElement("li"); // create li
                         newItem.className = "list-group-item" // li is list
                         newItem.appendChild(a); // add a to the li
@@ -267,7 +286,14 @@ function Login() { // got the json file on terms .
                 
 
     }else{
-        alert("Eror 404 - The filed are not full or the passwords is not the same")
+           var my_dialog = document.getElementById('login_dialog');
+                              my_dialog.className = 'alert alert-danger'; 
+                                my_dialog.innerHTML = "Eror 404 - The filed are not full or the passwords is not the same";
+                                my_dialog.style.visibility = "visible";
+                        setTimeout(function() {
+                                    my_dialog.style.visibility = "hidden";
+
+                                }, 2000);
     }
     
    
@@ -278,7 +304,16 @@ function AddNewTerm(){
     
     $('#addText').submit(function (e) {
          e.preventDefault();
-        $.post('/dictionary-api', {nameActivity: $('#name_activity').val(), Activity: $('#activity_description').val()});  
+        
+        var getName = $('#name_activity').val();
+        var getActivity = $('#activity_description').val();
+        console.log("getName" +getName);
+        console.log("getActivity" +getActivity); 
+        
+        console.log("getName length" +getName.length);
+        console.log("getActivity length" +getActivity.length);
+        if(getName.length != 0 && getActivity.length != 0){
+        $.post('/dictionary-api', {nameActivity: getName, Activity: getActivity});  
         this.reset();
         
         
@@ -295,7 +330,10 @@ function AddNewTerm(){
             });
     }, 200);
         
-
+    }else
+        {
+            alert('the fields are empty');
+        }
 
 })
 }
@@ -303,7 +341,7 @@ function AddNewTerm(){
                          
 function checkOnChange(){
       document.getElementById("BtnUploadFile").disabled = true;
-                        document.getElementById("BtnUploadFile").style.background='#Ff2141';
+      document.getElementById("BtnUploadFile").style.background='#Ff2141';
 
 }
 
@@ -329,11 +367,32 @@ function checkFileNameExists(){
                          document.getElementById("BtnUploadFile").disabled = false;
                          document.getElementById("BtnUploadFile").style.background='#2ff2ff';
                          
+                         
+                            var my_dialog = document.getElementById('add_dialog');
+                              my_dialog.className = 'alert alert-info'; 
+                                my_dialog.innerHTML = 'File is ready for upload';
+                                my_dialog.style.visibility = "visible";
+                        setTimeout(function() {
+                                    my_dialog.style.visibility = "hidden";
+
+                                }, 2000);
+                         
+                         
                      }
                     else{ // exists
                          document.getElementById("BtnUploadFile").disabled = true;
                      document.getElementById("BtnUploadFile").style.background='#Ff2141';
-                            alert('File name is allready exists ,\nPlease choose other name :/');
+                        
+                          var my_dialog = document.getElementById('add_dialog');
+                              my_dialog.className = 'alert alert-danger'; 
+                                my_dialog.innerHTML = 'File name is allready exists ,\nPlease choose other name :/';
+                                my_dialog.style.visibility = "visible";
+                        setTimeout(function() {
+                                    my_dialog.style.visibility = "hidden";
+
+                                }, 2000);
+                        
+                        
                         }
 
                     });
@@ -344,38 +403,84 @@ function checkFileNameExists(){
 }
     else
     {
-     alert('The name field is empty :/'); 
+           var my_dialog = document.getElementById('add_dialog');
+                              my_dialog.className = 'alert alert-danger'; 
+                                my_dialog.innerHTML = 'The name field is empty :/';
+                                my_dialog.style.visibility = "visible";
+                        setTimeout(function() {
+                                    my_dialog.style.visibility = "hidden";
+
+                                }, 2000);
     }
 }
 
 
 function UploadFile()
 {
-    var error = "No such file or directory on :\n";
-            var fileName = $('#fileName').val().trim();
+
+          document.getElementById("BtnUploadFile").disabled = true;
+      document.getElementById("BtnUploadFile").style.background='#Ff2141';
+    
+    var fileName = $('#fileName').val().trim();
                var filePath = $('#filePath').val().trim();
-    error+=filePath;
     
     if(fileName.length != 0 && filePath.length != 0){
         
                 
                 $.post('/update_values', {fileName: fileName,data: filePath} );
         
+                                setTimeout(function() {
+
                     $.ajax({
                    type: "GET",
                    url: "resultArray",
                    async: true,
                    success: function() {                     
                     $.getJSON('/resultArray', function(terms){
+                        console.log("Term[5]"+terms[5]);
+                        if(terms[5] == 0){
+                            
+                                          var my_dialog = document.getElementById('add_dialog');
+                              my_dialog.className = 'alert alert-danger'; 
+                                my_dialog.innerHTML = 'File Not Exists';
+                                my_dialog.style.visibility = "visible";
+                             document.getElementById("BtnUploadFile").disabled = false;
+                     document.getElementById("BtnUploadFile").style.background='#2ff2ff';
+                        setTimeout(function() {
+                                    my_dialog.style.visibility = "hidden";
 
-                                alert('File Upload Successfully');
+                                }, 2000);              
+                        }
+                        else{
+                                      var my_dialog = document.getElementById('add_dialog');
+                              my_dialog.className = 'alert alert-success'; 
+                                my_dialog.innerHTML = 'File Upload Successfully';
+                                my_dialog.style.visibility = "visible";
+                                  document.getElementById("BtnUploadFile").disabled = false;
+      document.getElementById("BtnUploadFile").style.background='#2ff2ff';
+                            
+                        setTimeout(function() {
+                                    my_dialog.style.visibility = "hidden";
+
+                                }, 2000);
+                        }
+                            
                         });
                    }
                     });
+                    }, 500);
                    }
     else
     {
-        alert('The fileds are empty , \nPlease fill them :)');
+        
+         var my_dialog = document.getElementById('add_dialog');
+                              my_dialog.className = 'alert alert-danger'; 
+                                my_dialog.innerHTML = 'The fileds are empty , \nPlease fill them :)';
+                                my_dialog.style.visibility = "visible";
+                        setTimeout(function() {
+                                    my_dialog.style.visibility = "hidden";
+
+                                }, 2000);
     }
 }
 
