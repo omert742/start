@@ -1,6 +1,8 @@
 var NodeAngularApp = angular.module('NodeAngularApp',['ngRoute'])
 
-
+//console.log("app Load");
+//set userIndex 
+$.post('/updateUserIndex', {userIndex: localStorage.userIndex});
 
 NodeAngularApp.config(function($routeProvider,$locationProvider){
              
@@ -12,13 +14,22 @@ $routeProvider
 .when('/register',{
     templateUrl: 'sites/register.html',
     controller: 'registerController'
-}).when('/online_chat',{
+})
+.when('/online_chat',{
     templateUrl: 'sites/online_chat.html',
     controller: 'mainController'
 })
+.when('/logout',{
+    templateUrl: 'sites/login.html',
+    controller: 'logout'
+})
 .when('/login',{
     templateUrl: 'sites/login.html',
-    controller: 'mainController'
+    controller: 'login'
+})
+.when('/acount_not_exsists',{
+    templateUrl: 'sites/acount_not_exsists.html',
+    controller: 'notExists'
 })
 .when('/add_file',{
         templateUrl: 'sites/add_file.html',
@@ -30,8 +41,9 @@ $routeProvider
 })
 .when('/panel',{
         templateUrl: 'sites/panel.html',
-        controller: 'MainController'
-}).when('/show_files',{
+        controller: 'mainController'
+})
+.when('/show_files',{
         templateUrl: 'sites/show_files.html',
         controller: 'showFiles'
 })
@@ -39,17 +51,34 @@ $routeProvider
     
 });
 
-NodeAngularApp.controller('mainController',function($scope,$log,$location){
-            
+NodeAngularApp.controller('mainController',function(){
+    if(localStorage.userIndex == undefined)
+        {
+            window.location = '/#/acount_not_exsists'
+        }
 });
 
+NodeAngularApp.controller('notExists',function(){
+
+});
+NodeAngularApp.controller('logout',function(){
+localStorage.removeItem("userIndex");
+});
 
 NodeAngularApp.controller('add_file',function(){
-checkFileNameExists
+       if(localStorage.userIndex == undefined)
+        {
+            window.location = '/#/acount_not_exsists'
+        }else
+        {
+            //checkFileNameExists();
+        }
 });
 
     NodeAngularApp.controller('login',function(){
 //Login();    
+
+
 });
     
 NodeAngularApp.controller('registerController',function(){
@@ -57,11 +86,24 @@ NodeAngularApp.controller('registerController',function(){
 });
 
 NodeAngularApp.controller('showDictionary',function(){
-    getDicitionry();
+           if(localStorage.userIndex == undefined)
+        {
+            window.location = '/#/acount_not_exsists'
+        }else
+        {
+                getDicitionry();
+        }
 });
 
 NodeAngularApp.controller('showFiles',function(){
+    
+             if(localStorage.userIndex == undefined)
+        {
+            window.location = '/#/acount_not_exsists'
+        }else
+        {
     showFilesF();
+        }
 });
 
 
@@ -71,22 +113,34 @@ function newMember() { // got the json file on terms .
     var Uname = $('#reg_username').val();
         var Upassword = $('#reg_password1').val();
             var Upassword2 = $('#reg_password2').val();
-    
         if(Uname.length != 0 && Upassword.length != 0 && Upassword2.length != 0 && Upassword === Upassword2 && Upassword.length >= 5 && Upassword2.length >= 5)
             {
             $.post('/register', {username: $('#reg_username').val(),password: $('#reg_password1').val()});
                $.ajax({
                    type: "GET",
                    url: "resultArray",
-                   async: false,
+                   async: true,
                    success: function() {                     
                     $.getJSON('/resultArray', function(terms){
 
                          if(terms[1] == 1) {
-                                alert('Registierison id allready exists');
+                            var my_dialog = document.getElementById('register_dialog');
+                              my_dialog.className = 'alert alert-danger'; 
+                                my_dialog.innerHTML = 'Registierison id allready exists';
+                                my_dialog.style.visibility = "visible";
+                        setTimeout(function() {
+                                    my_dialog.style.visibility = "hidden";
+                                }, 1000);
 
                         }else {
-                            alert('Sueceessfully Registiered');
+                            var my_dialog = document.getElementById('register_dialog');
+                             my_dialog.className = 'alert alert-success';       
+                            my_dialog.innerHTML = 'Sueceessfully Registiered';
+                                    my_dialog.style.visibility = "visible";
+                                    setTimeout(function() {
+                                    my_dialog.style.visibility = "hidden";
+                                }, 1000);
+                        
                         }
 
                     });
@@ -109,14 +163,31 @@ function showFilesF(){
                    async: true,
                    success: function() {                     
                         $.getJSON('/get_my_links', function(my_links){
-                        my_links.forEach(function(everyObject,callback) {       
-                        var a = document.createElement("a");
-                        var newItem = document.createElement("li");
+                        my_links.forEach(function(everyObject,callback) { 
+                            
+                            
+                        var a = document.createElement("a"); // create a       
                         a.textContent = everyObject.fileName;
                         a.setAttribute('href', everyObject.fileUrl);
-                        newItem.appendChild(a);
-                        ulist.appendChild(newItem);    
+                        var deleteBtn = document.createElement("BUTTON");
+                        var t = document.createTextNode("Delete File");    
+                        deleteBtn.appendChild(t);
+                        deleteBtn.onclick = function () {
+                            console.log("delete");
+                        };  
+                            
+                            
+                        var newItem = document.createElement("li"); // create li
+                        newItem.className = "list-group-item" // li is list
+                        newItem.appendChild(a); // add a to the li
+                        var br = document.createElement("br");    
+                        newItem.appendChild(br); // add a to the li
+                        newItem.appendChild(deleteBtn); // add a to the li
+                        ulist.appendChild(newItem);  // add the li to the list
+
                     });   
+                       
+                       
                     });
                    }
             });
@@ -152,21 +223,42 @@ function Login() { // got the json file on terms .
                $.ajax({
                    type: "GET",
                    url: "resultArray",
-                   async: false,
+                   async: true,
                    success: function() {                     
                     $.getJSON('/resultArray', function(terms){
                             
-                        
+                    console.log("hello");
                      if(terms[0] == 1) {
-                                alert('Login');
-                            window.location = '/#/showdictionary'
-                                getDicitionry();
+                            if(localStorage.userIndex != undefined)
+                                {
+                                    localStorage.removeItem("userIndex");
+                                }
+                                localStorage.userIndex = terms[4];
+                              var my_dialog = document.getElementById('login_dialog');
+                              my_dialog.className = 'alert alert-success'; 
+                                my_dialog.innerHTML = 'Login';
+                                my_dialog.style.visibility = "visible";
+                        setTimeout(function() {
+                                    my_dialog.style.visibility = "hidden";
+                                     window.location = '/#/panel'
+
+                                }, 1000);
+                         
 
                                     
                                     
     
                             }else {
-                            alert('Eror 404 - \nPlease check again that you filed all the details currectly');
+                                    console.log("hello out");
+                                 var my_dialog = document.getElementById('login_dialog');
+                              my_dialog.className = 'alert alert-danger'; 
+                                my_dialog.innerHTML = 'Eror 404 - \nPlease check again that you filed all the details currectly';
+                                my_dialog.style.visibility = "visible";
+                        setTimeout(function() {
+                                    my_dialog.style.visibility = "hidden";
+
+                                }, 2000);    
+                                
                         }
 
                     });
@@ -202,6 +294,9 @@ function AddNewTerm(){
                    }
             });
     }, 200);
+        
+
+
 })
 }
                          
@@ -237,8 +332,8 @@ function checkFileNameExists(){
                      }
                     else{ // exists
                          document.getElementById("BtnUploadFile").disabled = true;
-                        document.getElementById("BtnUploadFile").style.background='#Ff2141';
-                             alert('File name is allready exists ,\nPlease choose other name :/');
+                     document.getElementById("BtnUploadFile").style.background='#Ff2141';
+                            alert('File name is allready exists ,\nPlease choose other name :/');
                         }
 
                     });

@@ -1,11 +1,9 @@
-
 var express = require("express");
 var app = express();
 var cors = require("cors");
 var bodyParser = require("body-parser");
 var fs = require('fs');
 var engines = require('consolidate');
-
 app.use(bodyParser.json());  // add the app the option to parse data that send to the app on json type
 app.use(bodyParser.urlencoded({ extended: false })); // allways false (use only for real big amout of data)
 app.use(express.static("./public"));  // make all the file on public static so the app will know them
@@ -18,13 +16,13 @@ app.use(cors()); // allow other web and pages to read from my app
 
 
 
-var userIndex = 0;
+var userIndex = 2;
 var skierTerms = [
  
 ]; // my activitys
-var flagChecker = [2,2,0,0] ; // check if user exists // check registerison [0 = exists] 
+var flagChecker = [2,2,0,0,-1] ; // check if user exists // check registerison [0 = exists] 
                             // check if file added [0 == not] // check if filed send to the server
-
+                            // [4] = index of User number;
 
 
 var AWS = require('aws-sdk'); 
@@ -32,53 +30,35 @@ AWS.config.update({region: 'eu-west-1'});
 
 AWS.config.update({accessKeyId:'AKIAIR7H7JBH5UWFXLIA',secretAccessKey:'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'});
 
-
-
-
-
-
-
-app.post("/check_file_exists", function(req, res) { // handle post for that page 
-    checkFileExists(req);    
-});
-app.post("/update_values", function(req, res) { // handle post for that page 
-    uploadFileIfNeeded(req);    
-});
-
-app.get('/public/sites/add_file.html', function(request, response) {
-    response.render('public/sites/add_file.html');
-});
-app.get('/public/sites/show_files.html', function(request, response) {
-    response.render('public/sites/show_files.html');
-});
-
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
-});
-app.get('/', function(request, response) {
-    response.render('public/login.html');
-});
-
-app.get('/public/sites/login.html', function(request, response) {
-    response.render('public/sites/login.html');
-});
-
-app.get('/public/sites/panel.html', function(request, response) {
-    response.render('public/sites/panel.html');
-});
-app.get('/public/sites/showdictionary.html', function(request, response) {
-    response.render('public/sites/dictionary.html');
 });
 app.use(function(req, res, next) {
 	console.log(`${req.method} request for '${req.url}' - ${JSON.stringify(req.body)}`);
 
 	next();
 });
-app.post("/dictionary-api", function(req, res) { // router that open 
-    append_new_Object(req.body);
-
+app.get('/public/sites/add_file.html', function(request, response) {
+    response.render('public/sites/add_file.html');
 });
-
+app.get('/public/sites/show_files.html', function(request, response) {
+    response.render('public/sites/show_files.html');
+});
+app.get('/', function(request, response) {
+    response.render('public/login.html');
+});
+app.get('/public/sites/login.html', function(request, response) {
+    response.render('public/sites/login.html');
+});
+app.get('/public/sites/acount_not_exsists.html', function(request, response) {
+    response.render('public/sites/acount_not_exsists.html');
+});
+app.get('/public/sites/panel.html', function(request, response) {
+    response.render('public/sites/panel.html');
+});
+app.get('/public/sites/showdictionary.html', function(request, response) {
+    response.render('public/sites/dictionary.html');
+});
 app.get("/dictionary-api", function(req, res) { // router that open 
 
     fs.readFile('public/activity-data.json', 'utf8', function (err, data) {  
@@ -95,6 +75,55 @@ app.get("/dictionary-api", function(req, res) { // router that open
 
 
 });
+app.get("/resultArray", function(req, res) { // router that open 
+    res.json(flagChecker);
+});
+app.get("/get_my_links", function(req, res) { // router that open     
+       fs.readFile('public/activity-data.json', 'utf8', function (err, data) {  
+                   var my_links = [];
+        var obj = JSON.parse(data); // data 
+        obj = obj.users[userIndex].MyFiles;
+         obj.forEach(function(everyObject,callback) {       
+            var new_file_save = { fileName: everyObject.fileName, fileUrl: everyObject.fileUrl};
+             my_links.push(new_file_save);
+            });   
+           
+                   res.json(my_links);
+
+       });
+    
+    
+});
+app.post("/check_file_exists", function(req, res) { // handle post for that page 
+    checkFileExists(req);    
+});
+app.post("/update_values", function(req, res) { // handle post for that page 
+    uploadFileIfNeeded(req);    
+});
+app.post("/dictionary-api", function(req, res) { // router that open 
+    append_new_Object(req.body);
+
+});
+app.post("/login", function(req, res) { // handle post for that page 
+    
+    LoginFunc(req.body);
+    
+    
+
+
+
+});
+app.post("/register", function(req, res) { // handle post for that page 
+            
+            newMember(req.body);
+});
+
+app.post("/updateUserIndex", function(req, res) { // handle post for that page 
+            
+            userIndex = req.body.userIndex;
+});
+
+
 app.delete("/dictionary-api/:nameActivity", function(req, res) { // on delete 
     var valueToDel = req.params.nameActivity;
     var posion = 0 ;
@@ -122,43 +151,6 @@ app.delete("/dictionary-api/:nameActivity", function(req, res) { // on delete
     });
     res.json(skierTerms); // reload
 });
-app.get("/resultArray", function(req, res) { // router that open 
-    res.json(flagChecker);
-});
-
-app.get("/get_my_links", function(req, res) { // router that open     
-       fs.readFile('public/activity-data.json', 'utf8', function (err, data) {  
-                   var my_links = [];
-        var obj = JSON.parse(data); // data 
-        obj = obj.users[userIndex].MyFiles;
-         obj.forEach(function(everyObject,callback) {       
-            var new_file_save = { fileName: everyObject.fileName, fileUrl: everyObject.fileUrl};
-             my_links.push(new_file_save);
-            });   
-           
-                   res.json(my_links);
-
-       });
-    
-    
-});
-
-
-
-
-app.post("/login", function(req, res) { // handle post for that page 
-    
-    LoginFunc(req.body);
-    
-    
-
-
-
-});
-app.post("/register", function(req, res) { // handle post for that page 
-            
-            newMember(req.body);
-});
 
 
 function LoginFunc(Get_req_body){
@@ -173,10 +165,19 @@ function LoginFunc(Get_req_body){
             var run = 1 ;
             for(var i = 0 ; i<obj.length && run == 1; i++)
                 {
-                       if(Get_username.trim() === obj[i].username.trim() && Get_password === obj[i].password.trim() )
+                                        console.log("\n\n\n");
+                 console.log("Get_username.trim() : "+Get_username.trim());
+                 console.log("username.trim() : "+obj[i].username.trim());
+                    console.log("\n\n\n");
+                    console.log("Get_password.trim() : "+Get_password.trim());
+                 console.log("password.trim() : "+obj[i].password.trim());
+
+                       if(Get_username.trim() == obj[i].username.trim() && Get_password == obj[i].password.trim() )
                         {
+                            console.log("i Log In !");
                             userIndex = i ;
-                            flagChecker[0] = 1 ; // the object are exists
+                            flagChecker[0] = 1 ; // acount exists
+                            flagChecker[4] = i ; // the object number on the json
                            run = 0 ;
 
                         }    
@@ -187,6 +188,8 @@ function LoginFunc(Get_req_body){
 
         });
 }
+
+
 function delete_object(num){
     
    fs.readFile('public/activity-data.json', 'utf8', function (err, data) {  

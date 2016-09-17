@@ -75,9 +75,9 @@ body {
     margin-left: 10vw;
     margin-bottom: 4vh;
     float: center;
-    border-radius: 30%;
+    border-radius: 20%;
     background: lightyellow;
-    padding: 3%; 
+    padding: 5%; 
     border: 1vh solid white;
 
 }
@@ -120,7 +120,7 @@ dd {
     height: auto;
     border: 1vh solid white;
     border-radius: 1%;
-    padding: 3%; 
+    padding: 5%; 
 }
 
 #login {

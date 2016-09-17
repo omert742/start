@@ -15,7 +15,5 @@
     "cors": "^2.7.1",
     "easyjson": "^0.1.2",
     "express": "^4.13.3",
-    "socket.io": "^1.4.8",
-    "socket.io-client": "^1.4.8"
   }
 }
