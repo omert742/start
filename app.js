@@ -120,7 +120,7 @@ app.post("/register", function(req, res) { // handle post for that page
 
 app.post("/updateUserIndex", function(req, res) { // handle post for that page 
             
-            userIndex = req.body.userIndex;s
+            userIndex = req.body.userIndex;
 });
 
 
