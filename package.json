@@ -14,6 +14,7 @@
     "consolidate": "^0.14.1",
     "cors": "^2.7.1",
     "easyjson": "^0.1.2",
-    "express": "^4.13.3"
+    "express": "^4.13.3",
+    "nodemailer": "^2.6.0"
   }
 }

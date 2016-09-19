@@ -47,10 +47,13 @@ $routeProvider
         templateUrl: 'sites/show_files.html',
         controller: 'showFiles'
 })
+.when('/forgot_mypass',{
+        templateUrl: 'sites/forgot_mypass.html'
+})
+
 
     
 });
-
 NodeAngularApp.controller('mainController',function(){
     if(localStorage.userIndex == undefined)
         {
@@ -64,7 +67,6 @@ NodeAngularApp.controller('notExists',function(){
 NodeAngularApp.controller('logout',function(){
 localStorage.removeItem("userIndex");
 });
-
 NodeAngularApp.controller('add_file',function(){
        if(localStorage.userIndex == undefined)
         {
@@ -74,17 +76,14 @@ NodeAngularApp.controller('add_file',function(){
             //checkFileNameExists();
         }
 });
-
-    NodeAngularApp.controller('login',function(){
+NodeAngularApp.controller('login',function(){
 //Login();    
 
 
-});
-    
+});    
 NodeAngularApp.controller('registerController',function(){
 //newMember();    
 });
-
 NodeAngularApp.controller('showDictionary',function(){
            if(localStorage.userIndex == undefined)
         {
@@ -94,7 +93,6 @@ NodeAngularApp.controller('showDictionary',function(){
                 getDicitionry();
         }
 });
-
 NodeAngularApp.controller('showFiles',function(){
     
              if(localStorage.userIndex == undefined)
@@ -111,11 +109,12 @@ NodeAngularApp.controller('showFiles',function(){
 
 function newMember() { // got the json file on terms .
     var Uname = $('#reg_username').val();
+    var Umail = $('#reg_email').val();
         var Upassword = $('#reg_password1').val();
             var Upassword2 = $('#reg_password2').val();
-        if(Uname.length != 0 && Upassword.length != 0 && Upassword2.length != 0 && Upassword === Upassword2 && Upassword.length >= 5 && Upassword2.length >= 5)
+        if(Uname.length != 0 && Upassword.length != 0 && Upassword2.length != 0 && Umail.length != 0 && Upassword === Upassword2 && Upassword.length >= 5 && Upassword2.length >= 5 )
             {
-            $.post('/register', {username: $('#reg_username').val(),password: $('#reg_password1').val()});
+            $.post('/register', {username: $('#reg_username').val(),password: $('#reg_password1').val(),email : Umail});
                $.ajax({
                    type: "GET",
                    url: "resultArray",
@@ -133,6 +132,10 @@ function newMember() { // got the json file on terms .
                                 }, 1000);
 
                         }else {
+                            $('#reg_username').val('');
+                            $('#reg_email').val('');
+                            $('#reg_password1').val('');
+                            $('#reg_password2').val('');
                             var my_dialog = document.getElementById('register_dialog');
                              my_dialog.className = 'alert alert-success';       
                             my_dialog.innerHTML = 'Sueceessfully Registiered';
@@ -231,7 +234,6 @@ function printTerms(terms) { // got the json file on terms .
     });
 
 }      
-
 function Login() { // got the json file on terms .
     var Uname = $('#Log_username').val();
     var Upassword = $('#Log_password').val();
@@ -246,7 +248,6 @@ function Login() { // got the json file on terms .
                    success: function() {                     
                     $.getJSON('/resultArray', function(terms){
                             
-                    console.log("hello");
                      if(terms[0] == 1) {
                             if(localStorage.userIndex != undefined)
                                 {
@@ -268,7 +269,6 @@ function Login() { // got the json file on terms .
                                     
     
                             }else {
-                                    console.log("hello out");
                                  var my_dialog = document.getElementById('login_dialog');
                               my_dialog.className = 'alert alert-danger'; 
                                 my_dialog.innerHTML = 'Eror 404 - \nPlease check again that you filed all the details currectly';
@@ -288,7 +288,7 @@ function Login() { // got the json file on terms .
     }else{
            var my_dialog = document.getElementById('login_dialog');
                               my_dialog.className = 'alert alert-danger'; 
-                                my_dialog.innerHTML = "Eror 404 - The filed are not full or the passwords is not the same";
+                                my_dialog.innerHTML = "Eror 404 - The fileds are not fulls or the passwords is not match";
                                 my_dialog.style.visibility = "visible";
                         setTimeout(function() {
                                     my_dialog.style.visibility = "hidden";
@@ -299,7 +299,6 @@ function Login() { // got the json file on terms .
    
     
 }
-
 function AddNewTerm(){
     
     $('#addText').submit(function (e) {
@@ -307,11 +306,6 @@ function AddNewTerm(){
         
         var getName = $('#name_activity').val();
         var getActivity = $('#activity_description').val();
-        console.log("getName" +getName);
-        console.log("getActivity" +getActivity); 
-        
-        console.log("getName length" +getName.length);
-        console.log("getActivity length" +getActivity.length);
         if(getName.length != 0 && getActivity.length != 0){
         $.post('/dictionary-api', {nameActivity: getName, Activity: getActivity});  
         this.reset();
@@ -336,15 +330,12 @@ function AddNewTerm(){
         }
 
 })
-}
-                         
-                         
+} 
 function checkOnChange(){
       document.getElementById("BtnUploadFile").disabled = true;
       document.getElementById("BtnUploadFile").style.background='#Ff2141';
 
 }
-
 function checkFileNameExists(){   
     var fileName = $('#fileName').val();
     
@@ -359,10 +350,8 @@ function checkFileNameExists(){
                    async: true,
                    success: function() {     
                        
-                                    console.log("ajax is starting");
 
                     $.getJSON('/resultArray', function(terms){
-                        console.log("result Array : "+terms);
                      if(terms[3] == 0) {
                          document.getElementById("BtnUploadFile").disabled = false;
                          document.getElementById("BtnUploadFile").style.background='#2ff2ff';
@@ -413,10 +402,7 @@ function checkFileNameExists(){
                                 }, 2000);
     }
 }
-
-
-function UploadFile()
-{
+function UploadFile(){
 
           document.getElementById("BtnUploadFile").disabled = true;
       document.getElementById("BtnUploadFile").style.background='#Ff2141';
@@ -437,7 +423,6 @@ function UploadFile()
                    async: true,
                    success: function() {                     
                     $.getJSON('/resultArray', function(terms){
-                        console.log("Term[5]"+terms[5]);
                         if(terms[5] == 0){
                             
                                           var my_dialog = document.getElementById('add_dialog');
@@ -483,8 +468,6 @@ function UploadFile()
                                 }, 2000);
     }
 }
-
-
 function move() {
   var elem = document.getElementById("myBar");
           elem.style.width = 0 + '%';
@@ -499,5 +482,72 @@ function move() {
     }
   }
 }
+function sendMyPassById(){
+        var Uname = $('#for_username').val();
+    if(Uname.length >= 0){
+            $.post('/forgot_password', {username: Uname});
+        
+                                        setTimeout(function() {
 
+        
+                       $.ajax({
+                   type: "GET",
+                   url: "resultArray",
+                   async: true,
+                   success: function() {                     
+                    $.getJSON('/resultArray', function(terms){
+                            console.log("terms[6] "+terms[6]);
+                            console.log("terms[6].length "+terms[6].length);
+                     if(terms[6].length > 0) {
+                              var my_dialog = document.getElementById('forgot_pass_dialog');
+                              my_dialog.className = 'alert alert-success'; 
+                                my_dialog.innerHTML = 'The password sent to your email';
+                                my_dialog.style.visibility = "visible";
+                                $('#for_username').val('');
+
+                        setTimeout(function() {
+                            
+                                    my_dialog.style.visibility = "hidden";
+
+                                }, 1000);
+                         
+
+                                    
+                                    
+    
+                            }else {
+                                 var my_dialog = document.getElementById('forgot_pass_dialog');
+                              my_dialog.className = 'alert alert-danger'; 
+                                my_dialog.innerHTML = 'The username is not exists';
+                                my_dialog.style.visibility = "visible";
+                        setTimeout(function() {
+                                    my_dialog.style.visibility = "hidden";
+
+                                }, 2000);    
+                                
+                        }
+
+                    });
+                   }
+            }); 
+                                                                            }, 200);
+
+        
+        
+        
+        
+    }
+                                                   
+    else
+        {
+                      var my_dialog = document.getElementById('forgot_pass_dialog');
+                              my_dialog.className = 'alert alert-danger'; 
+                                my_dialog.innerHTML = "Eror 404 - The filed are not full or the passwords is not the same";
+                                my_dialog.style.visibility = "visible";
+                        setTimeout(function() {
+                                    my_dialog.style.visibility = "hidden";
+
+                                }, 2000); 
+        }
+}
 

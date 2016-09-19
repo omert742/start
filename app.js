@@ -4,6 +4,8 @@ var cors = require("cors");
 var bodyParser = require("body-parser");
 var fs = require('fs');
 var engines = require('consolidate');
+var nodemailer = require('nodemailer');
+
 app.use(bodyParser.json());  // add the app the option to parse data that send to the app on json type
 app.use(bodyParser.urlencoded({ extended: false })); // allways false (use only for real big amout of data)
 app.use(express.static("./public"));  // make all the file on public static so the app will know them
@@ -27,11 +29,24 @@ var flagChecker = [2,2,0,0,-1,0] ;
                             // [3] = check if filed send to the server
                             // [4] = index of User number;
                             // [5] = file exists on the computer
+                            // [6] = forgot my password -> return email
 
 var AWS = require('aws-sdk'); 
 AWS.config.update({region: 'eu-west-1'});
-
 AWS.config.update({accessKeyId:'AKIAIR7H7JBH5UWFXLIA',secretAccessKey:'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'});
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
@@ -43,6 +58,9 @@ app.use(function(req, res, next) {
 });
 app.get('/public/sites/add_file.html', function(request, response) {
     response.render('public/sites/add_file.html');
+});
+app.get('/public/sites/forgot_mypass.html', function(request, response) {
+    response.render('public/sites/forgot_mypass.html');
 });
 app.get('/public/sites/show_files.html', function(request, response) {
     response.render('public/sites/show_files.html');
@@ -102,6 +120,9 @@ app.get("/get_my_links", function(req, res) { // router that open
 app.post("/check_file_exists", function(req, res) { // handle post for that page 
     checkFileExists(req);    
 });
+app.post("/forgot_password", function(req, res) { // handle post for that page 
+        forgotPassword(req.body);
+});
 app.post("/update_values", function(req, res) { // handle post for that page 
     uploadFileIfNeeded(req);    
 });
@@ -122,18 +143,14 @@ app.post("/register", function(req, res) { // handle post for that page
             
             newMember(req.body);
 });
-
 app.post("/updateUserIndex", function(req, res) { // handle post for that page 
             
             userIndex = req.body.userIndex;
 });
-
 app.post("/delete_file", function(req, res) { // handle post for that page 
                                 console.log("here");
             deleteFile(req.body);
 });
-
-
 app.delete("/dictionary-api/:nameActivity", function(req, res) { // on delete 
     var valueToDel = req.params.nameActivity;
     var posion = 0 ;
@@ -175,16 +192,10 @@ function LoginFunc(Get_req_body){
             var run = 1 ;
             for(var i = 0 ; i<obj.length && run == 1; i++)
                 {
-                                        console.log("\n\n\n");
-                 console.log("Get_username.trim() : "+Get_username.trim());
-                 console.log("username.trim() : "+obj[i].username.trim());
-                    console.log("\n\n\n");
-                    console.log("Get_password.trim() : "+Get_password.trim());
-                 console.log("password.trim() : "+obj[i].password.trim());
+                      
 
                        if(Get_username.trim() == obj[i].username.trim() && Get_password == obj[i].password.trim() )
                         {
-                            console.log("i Log In !");
                             userIndex = i ;
                             flagChecker[0] = 1 ; // acount exists
                             flagChecker[4] = i ; // the object number on the json
@@ -197,9 +208,7 @@ function LoginFunc(Get_req_body){
            
 
         });
-}
-
-
+}//log in the the web page and save the localStorage index
 function delete_object(num){
     
    fs.readFile('public/activity-data.json', 'utf8', function (err, data) {  
@@ -218,7 +227,7 @@ function delete_object(num){
         
     
     
-}
+} // delete a activty
 function append_new_Object(new_obj){
     
     fs.readFile('public/activity-data.json', 'utf8', function (err, data) {  
@@ -238,25 +247,9 @@ function append_new_Object(new_obj){
         });
 
 
-}
-function updateData(new_obj){
-          fs.readFile('public/activity-data.json', 'utf8', function (err, data) {  
-            var obj = JSON.parse(data); // data 
+} // add new activity on the Activity list
 
-            obj.users.forEach(function(everyObject,callback) { 
-                
-                
-                if(new_obj.username != undefined){
-                    var checkvalue = new_obj.username;
-                    if(everyObject.username == checkvalue){
-                                        flagChecker[1] = 1 // work
-                                        return true;
-                        }
-                }
-            });
-        });
-}
-function newMember(new_obj){
+function newMember(new_obj){ // add new user the json
             flagChecker[1] = 2 ;
 
         fs.readFile('public/activity-data.json', 'utf8', function (err, data) {  
@@ -264,11 +257,10 @@ function newMember(new_obj){
             
        
                 
-             var run = 1 ;
+             var run = 1 ;// check if user exists
+            // if it does make flagChecker[1] = 1;
             for(var i = 0 ; i<obj.users.length && run == 1; i++)
-                {   
- 
-                        
+                {                           
                        if(new_obj.username.trim() === obj.users[i].username.trim() && new_obj.password === obj.users[i].password.trim() )
                         {
                             flagChecker[1] = 1 ; // the object are exists
@@ -277,7 +269,7 @@ function newMember(new_obj){
                         }    
                 };
             
-            
+            //if user is not exists , create him
             if(flagChecker[1] == 2 )
                 {
                      var exmapleObj = obj.users[userIndex];
@@ -285,6 +277,7 @@ function newMember(new_obj){
                     var newObject = configJSONExample;
                    var obj3 = JSON.parse(configJSONExample); // data 
                     obj3.username = new_obj.username.toLowerCase();
+                    obj3.email = new_obj.email.toLowerCase();
                     obj3.password = new_obj.password.toLowerCase();
                     obj3.MyActivitys = [];
                     obj.users.push(obj3);
@@ -304,11 +297,7 @@ function newMember(new_obj){
      });
 
         }
-
-
-
-
-function checkFileExists(req){
+function checkFileExists(req){ // check if the file name is exists on the s3 bucket
     var fs = require('fs');
     var allKeys = [];
     var s3 = new AWS.S3(); 
@@ -325,14 +314,17 @@ function checkFileExists(req){
 //    ------Get Key When there is no Errors------
     s3.listObjects(params2, function(err, data) {
       if (err) console.log(err, err.stack); // an error occurred
-      else {                
-          data.Contents.forEach(function(everyObject) { 
-              if(everyObject.Key.trim() == req.body.fileName.trim())
+      else {           
+            var run = 1;
+          for(var i = 0 ; i< data.Contents.length && run == 1; i++){
+                 if( data.Contents[i].Key.trim() == req.body.fileName.trim())
                   {
                       a=1;
+                      run= 0;
                   }
-            allKeys.push(everyObject.Key);
-            });
+          }
+          
+
             }
             if(a==1){
     
@@ -350,9 +342,7 @@ function checkFileExists(req){
      
 
 }
-
-function deleteFile(deleted_obj)
-{
+function deleteFile(deleted_obj){ // delete the file from the s3 server
 var BUCKET = 'omta-firstapp';
 var s3 = new AWS.S3();
 
@@ -378,46 +368,7 @@ s3.deleteObjects(params, function(err, data) {
   }            // successful response
 });
 }
-
-function uploadFileIfNeeded(req){
-    
-fs.stat(req.body.data, function(err, stat) {
-    if(err == null) {
-    //    console.log('File exists');
-        flagChecker[5] = 1;
-            var body = fs.createReadStream(req.body.data);
-        var s3obj = new AWS.S3({params: {Bucket: 'omta-firstapp', Key: req.body.fileName}});
-
-              var configJSON2 = JSON.stringify(body);
-
-            console.log("cUpLoad File")
-        s3obj.upload({Body: body}).
-          on('httpUploadProgress',function(evt){
-           // console.log(evt); 
-        }).send(function(err, data) { 
-                        console.log("upload");
-
-          //  console.log(err, data);
-        });
-         append_new_file(req.body.fileName);    
-        
-    } else if(err.code == 'ENOENT') {
-       // console.log('File do not exists');
-
-        
-    } else {
-     //   console.log('Some other error: ', err.code);
-    }
-});
-    
-
-
-     
-}
-        
-      
-    
-function remove_fromjson_file(deleted_obj){
+function remove_fromjson_file(deleted_obj){ // delete the url file from the json file
     var file_name = deleted_obj.Key;
 
     fs.readFile('public/activity-data.json', 'utf8', function (err, data) {  
@@ -427,24 +378,17 @@ function remove_fromjson_file(deleted_obj){
         var indexToDel = -1;
         
           var configJSON = JSON.stringify(obj2);
-            console.log("configJSON" +configJSON);
          for(var i = 0 ; i<obj2.length && runThisFor == 1; i++){
              
-                     console.log("for : ");
-                     console.log("obj2.fileName  :"+obj2[i].fileName );
-                     console.log("deleted_obj.Key : "+deleted_obj.Key);
-
              if(obj2[i].fileName == deleted_obj.Key){
                      runThisFor = 0 ;
                      indexToDel = i;
-                         console.log("in :"+indexToDel);
 
                  }
          }
            
    
         
-        console.log("indexToDel :"+indexToDel);
         
     delete obj2[userIndex]
     obj2.splice(userIndex,1);
@@ -454,8 +398,6 @@ function remove_fromjson_file(deleted_obj){
     });
 
 }   
-
-
 function append_new_file(req){
     var file_name = req;
 
@@ -482,10 +424,89 @@ function append_new_file(req){
  
     
 
+} // add the file url to the json on the user
+
+function uploadFileIfNeeded(req){ // upload file to the s3
+    
+fs.stat(req.body.data, function(err, stat) {
+    if(err == null) {
+    //    console.log('File exists');
+        flagChecker[5] = 1;
+            var body = fs.createReadStream(req.body.data);
+        var s3obj = new AWS.S3({params: {Bucket: 'omta-firstapp', Key: req.body.fileName}});
+
+              var configJSON2 = JSON.stringify(body);
+
+        s3obj.upload({Body: body}).
+          on('httpUploadProgress',function(evt){
+           // console.log(evt); 
+        }).send(function(err, data) { 
+
+          //  console.log(err, data);
+        });
+         append_new_file(req.body.fileName);    
+        
+    } else if(err.code == 'ENOENT') {
+       // console.log('File do not exists');
+
+        
+    } else {
+     //   console.log('Some other error: ', err.code);
+    }
+});
+    
+
+
+     
 }
 
+function forgotPassword(new_obj){
 
+        fs.readFile('public/activity-data.json', 'utf8', function (err, data) { 
+            var email = '';
+            var pass = '';
+            var obj = JSON.parse(data); // data 
 
+             var run = 1 ;// check if user exists
+            // if it does make flagChecker[1] = 1;
+            for(var i = 0 ; i<obj.users.length && run == 1; i++){                           
+                    if(new_obj.username.trim() == obj.users[i].username.trim()){
+                            run = 0 ;
+                          email = obj.users[i].email;
+                          pass = obj.users[i].password;
+                       }
+                       
+            }   
+        flagChecker[6] = email ;
 
+            if(email != ''){
+              
+                
+// create reusable transporter object using the default SMTP transport
+var transporter = nodemailer.createTransport('smtps://omertamire%40gmail.com:fhcjhhovfk@smtp.gmail.com');
+
+// setup e-mail data with unicode symbols
+var mailOptions = {
+    from: '"Omer Tamir 👥" <omertamire@gmail.com>', // sender address
+    to: email, // list of receivers
+    subject: 'Password Recovery ', // Subject line
+    text: 'Dear User, you account password is : '+pass, // plaintext body
+//    html: <b>"Dear User, you account password is : "+pass</b>// html body
+};
+
+// send mail with defined transport object
+transporter.sendMail(mailOptions, function(error, info){
+    if(error){
+        return console.log(error);
+    }
+});
+                
+                
+                }
+            
+
+    });
+            } // if user forgot is password
+                       
 
 
