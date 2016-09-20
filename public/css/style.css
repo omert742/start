@@ -12,6 +12,10 @@ h1 {
     color: darkblue;
 }
 
+#preview{
+    width: 30vw;
+    height: auto;
+}
 
 body {
     

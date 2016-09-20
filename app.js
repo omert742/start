@@ -14,6 +14,8 @@ app.use(bodyParser.urlencoded({ extended: false })); // allways false (use only 
 app.use(express.static("./public"));  // make all the file on public static so the app will know them
 app.set('views', __dirname + '/public');
 app.engine('html', engines.mustache);
+const S3_BUCKET = process.env.S3_BUCKET;
+
 app.set('view engine', 'html');
 app.set('port', (process.env.PORT || 5000));
 app.use(express.static(__dirname + '/public'));
@@ -59,6 +61,47 @@ app.use(function(req, res, next) {
 
 	next();
 });
+
+
+app.get('/sign-s3', (req, res) => {
+  const s3 = new AWS.S3();
+  const fileName = req.query['file-name'];
+  const fileType = req.query['file-type'];
+    
+    var random_name = '';
+    
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for( var i=0; i < 30; i++ ){
+        random_name += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    
+    append_new_file(fileName,random_name);
+  const s3Params = {
+    Bucket: "omta-firstapp",
+    Key: random_name,
+    ContentType: fileType,
+    ACL: 'public-read'
+  };
+
+  s3.getSignedUrl('putObject', s3Params, (err, data) => {
+    if(err){
+      console.log(err);
+      return res.end();
+    }
+    const returnData = {
+      signedRequest: data,
+      url: `https://${"omta-firstapp"}.s3.amazonaws.com/${random_name}`
+    };
+    res.write(JSON.stringify(returnData));
+    res.end();
+  });
+});
+
+
+
+
 app.get('/public/sites/add_file.html', function(request, response) {
     response.render('public/sites/add_file.html');
 });
@@ -110,7 +153,7 @@ app.get("/get_my_links", function(req, res) { // router that open
            
         if(obj.length >= 1){
          obj.forEach(function(everyObject,callback) {       
-            var new_file_save = { fileName: everyObject.fileName, fileUrl: everyObject.fileUrl};
+            var new_file_save = { fileName: everyObject.fileName, fileUrl: everyObject.fileUrl , nameServer : everyObject.nameServer};
              my_links.push(new_file_save);
             });   
         }
@@ -152,7 +195,8 @@ app.post("/updateUserIndex", function(req, res) { // handle post for that page
             userIndex = req.body.userIndex;
 });
 app.post("/delete_file", function(req, res) { // handle post for that page 
-                                console.log("here");
+                                console.log("here1" +req.body.Key);
+                                console.log("here2" +req.body.nameServer);
             deleteFile(req.body);
 });
 app.delete("/dictionary-api/:nameActivity", function(req, res) { // on delete 
@@ -182,6 +226,7 @@ app.delete("/dictionary-api/:nameActivity", function(req, res) { // on delete
     });
     res.json(skierTerms); // reload
 });
+
 
 
 function LoginFunc(Get_req_body){
@@ -252,7 +297,6 @@ function append_new_Object(new_obj){
 
 
 } // add new activity on the Activity list
-
 function newMember(new_obj){ // add new user the json
             flagChecker[1] = 2 ;
 
@@ -301,52 +345,7 @@ function newMember(new_obj){ // add new user the json
      });
 
         }
-function checkFileExists(req_key){ // check if the file name is exists on the s3 bucket
-    var fs = require('fs');
-    var allKeys = [];
-    var s3 = new AWS.S3(); 
-    var a = 0;
-    var params2 = {
-      Bucket: 'omta-firstapp', /* required */
-    //  Delimiter: 'STRING_VALUE',
-      EncodingType: 'url',
-      Marker: '',
-    //  Prefix: 'STRING_VALUE'
-    };
-    
-    
-//    ------Get Key When there is no Errors------
-    s3.listObjects(params2, function(err, data) {
-      if (err) console.log(err, err.stack); // an error occurred
-      else {           
-            var run = 1;
-          for(var i = 0 ; i< data.Contents.length && run == 1; i++){
-                 if( data.Contents[i].Key.trim() == req_key.trim())
-                  {
-                      a=1;
-                      run= 0;
-                  }
-          }
-          
 
-            }
-            if(a==1){//exists
-                
-              flagChecker[3] = 1 ;
-
-            }
-        else{// not exsists
-            
-          flagChecker[3] = 0 ;
-            }
-        
-
-        });
-    
-
-     
-
-}
 function deleteFile(deleted_obj){ // delete the file from the s3 server
 var BUCKET = 'omta-firstapp';
 var s3 = new AWS.S3();
@@ -359,8 +358,15 @@ var params = {
       } ],
   },
 };
-   
-    params.Delete.Objects[0] = deleted_obj;
+    console.log("\n\n\n\n\n\n")
+    console.log("deleted_obj.Key :"+deleted_obj.Key);
+    console.log("deleted_obj.Key2 :"+deleted_obj.Key);
+        console.log("\n\n\n\n\n\n")
+
+   var newobj = {Key: deleted_obj.nameServer} //delete from node
+      var newobj2 = {Key: deleted_obj.Key} // delete from json
+
+    params.Delete.Objects[0] = newobj;
         var configJSON2 = JSON.stringify(params);
 console.log(configJSON2)
 
@@ -369,7 +375,7 @@ s3.deleteObjects(params, function(err, data) {
       console.log(err, err.stack); // an error occurred
   }else{
        console.log(data);  
-      remove_fromjson_file(deleted_obj);
+      remove_fromjson_file(newobj2);
   }            // successful response
 });
 }
@@ -394,7 +400,6 @@ function remove_fromjson_file(deleted_obj){ // delete the url file from the json
            
    
         
-        
     delete obj2[userIndex]
     obj2.splice(userIndex,1);
     var configJSON = JSON.stringify(obj);
@@ -402,14 +407,14 @@ function remove_fromjson_file(deleted_obj){ // delete the url file from the json
     
     });
 
-}   
-function append_new_file(req){
-    var file_name = req;
+} 
+
+function append_new_file(name_json,name_server){//add new file to the json 
 
     fs.readFile('public/activity-data.json', 'utf8', function (err, data) {  
         var obj = JSON.parse(data); // data 
         var obj2 = obj.users[userIndex].MyFiles;
-        var new_file_save = {fileName: file_name, fileUrl: "http://omta-firstapp.s3.amazonaws.com/"+file_name};
+        var new_file_save = {fileName: name_json, fileUrl: "http://omta-firstapp.s3.amazonaws.com/"+name_server,nameServer: name_server };
         obj2.push(new_file_save);
         var configJSON2 = JSON.stringify(obj);
         
@@ -423,47 +428,8 @@ function append_new_file(req){
         
         });
     
-    
-    
-    
- 
-    
 
 } // add the file url to the json on the user
-
-function uploadFileIfNeeded(req){ // upload file to the s3
-    
-fs.stat(req.body.data, function(err, stat) {
-    if(err == null) {
-    //    console.log('File exists');
-        flagChecker[5] = 1;
-            var body = fs.createReadStream(req.body.data);
-        var s3obj = new AWS.S3({params: {Bucket: 'omta-firstapp', Key: req.body.fileName}});
-
-              var configJSON2 = JSON.stringify(body);
-
-        s3obj.upload({Body: body}).
-          on('httpUploadProgress',function(evt){
-           // console.log(evt); 
-        }).send(function(err, data) { 
-
-          //  console.log(err, data);
-        });
-         append_new_file(req.body.fileName);    
-        
-    } else if(err.code == 'ENOENT') {
-       // console.log('File do not exists');
-
-        
-    } else {
-     //   console.log('Some other error: ', err.code);
-    }
-});
-    
-
-
-     
-}
 
 function forgotPassword(new_obj){
 
@@ -514,4 +480,85 @@ transporter.sendMail(mailOptions, function(error, info){
             } // if user forgot is password
                        
 
-
+//
+//
+//
+//function uploadFileIfNeeded(req){ // upload file to the s3
+//    
+//fs.stat(req.body.data, function(err, stat) {
+//    if(err == null) {
+//    //    console.log('File exists');
+//        flagChecker[5] = 1;
+//            var body = fs.createReadStream(req.body.data);
+//        var s3obj = new AWS.S3({params: {Bucket: 'omta-firstapp', Key: req.body.fileName}});
+//
+//              var configJSON2 = JSON.stringify(body);
+//
+//        s3obj.upload({Body: body}).
+//          on('httpUploadProgress',function(evt){
+//           // console.log(evt); 
+//        }).send(function(err, data) { 
+//
+//          //  console.log(err, data);
+//        });
+//         append_new_file(req.body.fileName);    
+//        
+//    } else if(err.code == 'ENOENT') {
+//       // console.log('File do not exists');
+//
+//        
+//    } else {
+//     //   console.log('Some other error: ', err.code);
+//    }
+//});
+//    
+//
+//
+//     
+//}
+//function checkFileExists(req_key){ // check if the file name is exists on the s3 bucket
+//    var fs = require('fs');
+//    var allKeys = [];
+//    var s3 = new AWS.S3(); 
+//    var a = 0;
+//    var params2 = {
+//      Bucket: 'omta-firstapp', /* required */
+//    //  Delimiter: 'STRING_VALUE',
+//      EncodingType: 'url',
+//      Marker: '',
+//    //  Prefix: 'STRING_VALUE'
+//    };
+//    
+//    
+////    ------Get Key When there is no Errors------
+//    s3.listObjects(params2, function(err, data) {
+//      if (err) console.log(err, err.stack); // an error occurred
+//      else {           
+//            var run = 1;
+//          for(var i = 0 ; i< data.Contents.length && run == 1; i++){
+//                 if( data.Contents[i].Key.trim() == req_key.trim())
+//                  {
+//                      a=1;
+//                      run= 0;
+//                  }
+//          }
+//          
+//
+//            }
+//            if(a==1){//exists
+//                
+//              flagChecker[3] = 1 ;
+//
+//            }
+//        else{// not exsists
+//            
+//          flagChecker[3] = 0 ;
+//            }
+//        
+//
+//        });
+//    
+//
+//     
+//
+//}

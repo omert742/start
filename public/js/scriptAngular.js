@@ -184,7 +184,7 @@ function showFilesF(){
                         deleteBtn.appendChild(t);
                         deleteBtn.onclick = function () {
                             $("addFilesBox").empty();
-                            $.post('/delete_file', {Key: everyObject.fileName});
+    $.post('/delete_file',{Key: everyObject.fileName,nameServer: everyObject.nameServer}); 
                             var my_dialog = document.getElementById('show_dialog');
                               my_dialog.className = 'alert alert-info'; 
                                 my_dialog.innerHTML = 'Deleting File...';
@@ -338,172 +338,6 @@ function AddNewTerm(){
 
 })
 } 
-function checkOnChange(){
-      document.getElementById("BtnUploadFile").disabled = true;
-      document.getElementById("BtnUploadFile").style.background='#Ff2141';
-
-}
-function checkFileNameExists(){ 
-    
-    
-    
-    var formData = new FormData();
-
-    var fileName = $('#fileName').val();
-    if(fileName.length >=1){
-    $.post('/check_file_exists', {fileName: fileName,data: ""}, function( data ) {
-    alert('check Complte');
-    
-    })
-     .done(function() {
-    alert( "second success" );
-  });
-        
-        
-        
-        
-        
-                    move();
-
-        setTimeout(function() {
-         $.ajax({
-                   type: "GET",
-                   url: "resultArray",
-                   async: true,
-                   success: function() {     
-                       
-
-                    $.getJSON('/resultArray', function(terms){
-                     if(terms[3] == 0) {
-                         document.getElementById("BtnUploadFile").disabled = false;
-                         document.getElementById("BtnUploadFile").style.background='#2ff2ff';
-                         
-                         
-                            var my_dialog = document.getElementById('add_dialog');
-                              my_dialog.className = 'alert alert-info'; 
-                                my_dialog.innerHTML = 'File is ready for upload';
-                                my_dialog.style.visibility = "visible";
-                        setTimeout(function() {
-                                    my_dialog.style.visibility = "hidden";
-
-                                }, 2000);
-                         
-                         
-                     }
-                    else{ // exists
-                         document.getElementById("BtnUploadFile").disabled = true;
-                     document.getElementById("BtnUploadFile").style.background='#Ff2141';
-                        
-                          var my_dialog = document.getElementById('add_dialog');
-                              my_dialog.className = 'alert alert-danger'; 
-                                my_dialog.innerHTML = 'File name is allready exists ,\nPlease choose other name :/';
-                                my_dialog.style.visibility = "visible";
-                        setTimeout(function() {
-                                    my_dialog.style.visibility = "hidden";
-
-                                }, 2000);
-                        
-                        
-                        }
-
-                    });
-                   }
-            });
-    }, 2000);
-                       // Whatever you want to do after the wait
-}
-    else
-    {
-           var my_dialog = document.getElementById('add_dialog');
-                              my_dialog.className = 'alert alert-danger'; 
-                                my_dialog.innerHTML = 'The name field is empty :/';
-                                my_dialog.style.visibility = "visible";
-                        setTimeout(function() {
-                                    my_dialog.style.visibility = "hidden";
-
-                                }, 2000);
-    }
-}
-function UploadFile(){
-
-          document.getElementById("BtnUploadFile").disabled = true;
-      document.getElementById("BtnUploadFile").style.background='#Ff2141';
-    
-    var fileName = $('#fileName').val().trim();
-               var filePath = $('#filePath').val().trim();
-    
-    if(fileName.length != 0 && filePath.length != 0){
-        
-                
-                $.post('/update_values', {fileName: fileName,data: filePath} );
-        
-                                setTimeout(function() {
-
-                    $.ajax({
-                   type: "GET",
-                   url: "resultArray",
-                   async: true,
-                   success: function() {                     
-                    $.getJSON('/resultArray', function(terms){
-                        if(terms[5] == 0){
-                            
-                                          var my_dialog = document.getElementById('add_dialog');
-                              my_dialog.className = 'alert alert-danger'; 
-                                my_dialog.innerHTML = 'File Not Exists';
-                                my_dialog.style.visibility = "visible";
-                             document.getElementById("BtnUploadFile").disabled = false;
-                     document.getElementById("BtnUploadFile").style.background='#2ff2ff';
-                        setTimeout(function() {
-                                    my_dialog.style.visibility = "hidden";
-
-                                }, 2000);              
-                        }
-                        else{
-                                      var my_dialog = document.getElementById('add_dialog');
-                              my_dialog.className = 'alert alert-success'; 
-                                my_dialog.innerHTML = 'File Upload Successfully';
-                                my_dialog.style.visibility = "visible";
-                                  document.getElementById("BtnUploadFile").disabled = false;
-      document.getElementById("BtnUploadFile").style.background='#2ff2ff';
-                            
-                        setTimeout(function() {
-                                    my_dialog.style.visibility = "hidden";
-
-                                }, 2000);
-                        }
-                            
-                        });
-                   }
-                    });
-                    }, 500);
-                   }
-    else
-    {
-        
-         var my_dialog = document.getElementById('add_dialog');
-                              my_dialog.className = 'alert alert-danger'; 
-                                my_dialog.innerHTML = 'The fileds are empty , \nPlease fill them :)';
-                                my_dialog.style.visibility = "visible";
-                        setTimeout(function() {
-                                    my_dialog.style.visibility = "hidden";
-
-                                }, 2000);
-    }
-}
-function move() {
-  var elem = document.getElementById("myBar");
-          elem.style.width = 0 + '%';
-  var width = 0.5;
-  var id = setInterval(frame, 20);
-  function frame() {
-    if (width >= 100) {
-      clearInterval(id);
-    } else {
-      width++;
-      elem.style.width = width + '%';
-    }
-  }
-}
 function sendMyPassById(){
         var Uname = $('#for_username').val();
     if(Uname.length >= 0){
@@ -572,4 +406,233 @@ function sendMyPassById(){
                                 }, 2000); 
         }
 }
+function onChangeFile(){
+     console.log("hey")
+         const files = document.getElementById('file-input').files;
+    const file = files[0];
+    if(file == null){
+      return alert('No file selected.');
+    }
+    getSignedRequest(file);
+}
+function getSignedRequest(file){
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', `/sign-s3?file-name=${file.name}&file-type=${file.type}`);
+  xhr.onreadystatechange = () => {
+    if(xhr.readyState === 4){
+      if(xhr.status === 200){
+        const response = JSON.parse(xhr.responseText);
+        uploadFile(file, response.signedRequest, response.url);
+      }
+      else{
+        alert('Could not get signed URL.');
+      }
+    }
+  };
+  xhr.send();
+}
+function uploadFile(file, signedRequest, url){
+  const xhr = new XMLHttpRequest();
+  xhr.open('PUT', signedRequest);
+  xhr.onreadystatechange = () => {
+    if(xhr.readyState === 4){
+      if(xhr.status === 200){
+if (file.name.match(/\.(jpg|jpeg|png|gif)$/))
+    {
+        console.log('img')
+        document.getElementById('preview').src = url;
+    }
+else
+    {
+       document.getElementById('preview').src = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Upload.svg/2000px-Upload.svg.png"; 
+    }
+       // document.getElementById('avatar-url').value = url;
+          
+           var my_dialog = document.getElementById('add_dialog');
+             my_dialog.className = 'alert alert-success'; 
+            my_dialog.innerHTML = 'File Upload Successfully';
+            my_dialog.style.visibility = "visible";
+                setTimeout(function() {
+                      my_dialog.style.visibility = "hidden";
+                }, 4000);  
+          
+      }
+      else{
+                                      
+            var my_dialog = document.getElementById('add_dialog');
+              my_dialog.className = 'alert alert-danger'; 
+                my_dialog.innerHTML = 'Could not upload file.';
+                my_dialog.style.visibility = "visible";
+                setTimeout(function() {
+                            my_dialog.style.visibility = "hidden";
+               }, 4000);   
+      }
+    }
+  };
+  xhr.send(file);
+}
 
+
+
+
+//function checkFileNameExists(){ 
+//    
+//    
+//    
+//    var formData = new FormData();
+//
+//    var fileName = $('#fileName').val();
+//    if(fileName.length >=1){
+//    $.post('/check_file_exists', {fileName: fileName,data: ""}, function( data ) {
+//    alert('check Complte');
+//    
+//    })
+//     .done(function() {
+//    alert( "second success" );
+//  });
+//        
+//        
+//        
+//        
+//        
+//                    move();
+//
+//        setTimeout(function() {
+//         $.ajax({
+//                   type: "GET",
+//                   url: "resultArray",
+//                   async: true,
+//                   success: function() {     
+//                       
+//
+//                    $.getJSON('/resultArray', function(terms){
+//                     if(terms[3] == 0) {
+//                         document.getElementById("BtnUploadFile").disabled = false;
+//                         document.getElementById("BtnUploadFile").style.background='#2ff2ff';
+//                         
+//                         
+//                            var my_dialog = document.getElementById('add_dialog');
+//                              my_dialog.className = 'alert alert-info'; 
+//                                my_dialog.innerHTML = 'File is ready for upload';
+//                                my_dialog.style.visibility = "visible";
+//                        setTimeout(function() {
+//                                    my_dialog.style.visibility = "hidden";
+//
+//                                }, 2000);
+//                         
+//                         
+//                     }
+//                    else{ // exists
+//                         document.getElementById("BtnUploadFile").disabled = true;
+//                     document.getElementById("BtnUploadFile").style.background='#Ff2141';
+//                        
+//                          var my_dialog = document.getElementById('add_dialog');
+//                              my_dialog.className = 'alert alert-danger'; 
+//                                my_dialog.innerHTML = 'File name is allready exists ,\nPlease choose other name :/';
+//                                my_dialog.style.visibility = "visible";
+//                        setTimeout(function() {
+//                                    my_dialog.style.visibility = "hidden";
+//
+//                                }, 2000);
+//                        
+//                        
+//                        }
+//
+//                    });
+//                   }
+//            });
+//    }, 2000);
+//                       // Whatever you want to do after the wait
+//}
+//    else
+//    {
+//           var my_dialog = document.getElementById('add_dialog');
+//                              my_dialog.className = 'alert alert-danger'; 
+//                                my_dialog.innerHTML = 'The name field is empty :/';
+//                                my_dialog.style.visibility = "visible";
+//                        setTimeout(function() {
+//                                    my_dialog.style.visibility = "hidden";
+//
+//                                }, 2000);
+//    }
+//}
+//function UploadFile(){
+//
+//          document.getElementById("BtnUploadFile").disabled = true;
+//      document.getElementById("BtnUploadFile").style.background='#Ff2141';
+//    
+//    var fileName = $('#fileName').val().trim();
+//               var filePath = $('#filePath').val().trim();
+//    
+//    if(fileName.length != 0 && filePath.length != 0){
+//        
+//                
+//                $.post('/update_values', {fileName: fileName,data: filePath} );
+//        
+//                                setTimeout(function() {
+//
+//                    $.ajax({
+//                   type: "GET",
+//                   url: "resultArray",
+//                   async: true,
+//                   success: function() {                     
+//                    $.getJSON('/resultArray', function(terms){
+//                        if(terms[5] == 0){
+//                            
+//                                          var my_dialog = document.getElementById('add_dialog');
+//                              my_dialog.className = 'alert alert-danger'; 
+//                                my_dialog.innerHTML = 'File Not Exists';
+//                                my_dialog.style.visibility = "visible";
+//                             document.getElementById("BtnUploadFile").disabled = false;
+//                     document.getElementById("BtnUploadFile").style.background='#2ff2ff';
+//                        setTimeout(function() {
+//                                    my_dialog.style.visibility = "hidden";
+//
+//                                }, 2000);              
+//                        }
+//                        else{
+//                                      var my_dialog = document.getElementById('add_dialog');
+//                              my_dialog.className = 'alert alert-success'; 
+//                                my_dialog.innerHTML = 'File Upload Successfully';
+//                                my_dialog.style.visibility = "visible";
+//                                  document.getElementById("BtnUploadFile").disabled = false;
+//      document.getElementById("BtnUploadFile").style.background='#2ff2ff';
+//                            
+//                        setTimeout(function() {
+//                                    my_dialog.style.visibility = "hidden";
+//
+//                                }, 2000);
+//                        }
+//                            
+//                        });
+//                   }
+//                    });
+//                    }, 500);
+//                   }
+//    else
+//    {
+//        
+//         var my_dialog = document.getElementById('add_dialog');
+//                              my_dialog.className = 'alert alert-danger'; 
+//                                my_dialog.innerHTML = 'The fileds are empty , \nPlease fill them :)';
+//                                my_dialog.style.visibility = "visible";
+//                        setTimeout(function() {
+//                                    my_dialog.style.visibility = "hidden";
+//
+//                                }, 2000);
+//    }
+//}
+//function move() {
+//  var elem = document.getElementById("myBar");
+//          elem.style.width = 0 + '%';
+//  var width = 0.5;
+//  var id = setInterval(frame, 20);
+//  function frame() {
+//    if (width >= 100) {
+//      clearInterval(id);
+//    } else {
+//      width++;
+//      elem.style.width = width + '%';
+//    }
+//  }
+//}

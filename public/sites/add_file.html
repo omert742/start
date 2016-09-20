@@ -11,7 +11,7 @@
           <a class="navbar-brand" href="#/panel">Menu</a>
         </div>
         <ul class="nav navbar-nav">
-          <li class="active"><a href="#/logout">Logout</a></li>
+          <li ><a href="#/logout">Logout</a></li>
           <li><a href="#/showdictionary">My Activitys</a></li>
           <li><a href="#/add_file">Add files</a></li>
           <li><a href="#/show_files">My files</a></li>
@@ -27,30 +27,36 @@
 
 <div id="addFilesBox" class="container">
  <dt> Add New File </dt>
-<h3>File Name :</h3>
-<input  class="inputIdPass" type="type" onchange="checkOnChange()" value="" id="fileName" placeholder="Enter File Name" required /> 
+<!--<h3>File Name :</h3>-->
+<!--<input  class="inputIdPass" type="type" onchange="checkOnChange()" value="" id="fileName" placeholder="Enter File Name" required /> -->
     
+    
+    <p id="status">Please select a file</p>
+  <input type="file" style="margin-left : 30vw" id="file-input" onchange="onChangeFile()">
+<img id="preview"  src="/defulet.jpg">  
 
+<!--
 <button onclick="checkFileNameExists()">Check If File Name Excists</button>    
 <h3>File Path :</h3>
     
     
     
-<div ngf-select="vm.upload($file)">
-    
+-->
+         <p id="add_dialog" class="alert alert-success" style="visibility : hidden"></p>
+
 </div>    
+<!--
     
 <input class="inputIdPass" type="type" id="filePath" placeholder="Enter File Path" required/> 
-<!--<img id="addImage" src="" height="auto" alt="Image preview...">-->
+-->
 
         
 <!--<p id="fileData"></p> <br>-->
-<button id="BtnUploadFile" class="inputIdPass" style="background:#Ff2141; color:white" disabled onclick="UploadFile()">Upload</button>
+<!--<button id="BtnUploadFile" class="inputIdPass" style="background:#Ff2141; color:white" disabled onclick="UploadFile()">Upload</button>-->
     
-     <p id="add_dialog" class="alert alert-success" style="visibility : hidden"></p>
-    <div id="myProgress">
+<!--    <div id="myProgress">-->
         
-  <div id="myBar"></div>
+<!--  <div id="myBar"></div>-->
 </div>
     <br><br><br>
  
