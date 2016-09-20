@@ -33,7 +33,8 @@ $routeProvider
 })
 .when('/add_file',{
         templateUrl: 'sites/add_file.html',
-        controller: 'add_file'
+        controller: 'add_file',
+        contollerAs: 'vm'
 })
 .when('/showdictionary',{
         templateUrl: 'sites/dictionary.html',
@@ -67,7 +68,13 @@ NodeAngularApp.controller('notExists',function(){
 NodeAngularApp.controller('logout',function(){
 localStorage.removeItem("userIndex");
 });
-NodeAngularApp.controller('add_file',function(){
+NodeAngularApp.controller('add_file',function($scope,$http){
+//    
+//        $scope.upload = function(file){
+//            $http({url:})
+//                   data = file
+//        }
+//        
        if(localStorage.userIndex == undefined)
         {
             window.location = '/#/acount_not_exsists'
@@ -336,11 +343,26 @@ function checkOnChange(){
       document.getElementById("BtnUploadFile").style.background='#Ff2141';
 
 }
-function checkFileNameExists(){   
-    var fileName = $('#fileName').val();
+function checkFileNameExists(){ 
     
-    if(fileName.length > 0 ){
-         $.post('/check_file_exists', {fileName: fileName,data: ""} );
+    
+    
+    var formData = new FormData();
+
+    var fileName = $('#fileName').val();
+    if(fileName.length >=1){
+    $.post('/check_file_exists', {fileName: fileName,data: ""}, function( data ) {
+    alert('check Complte');
+    
+    })
+     .done(function() {
+    alert( "second success" );
+  });
+        
+        
+        
+        
+        
                     move();
 
         setTimeout(function() {

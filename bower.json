@@ -1,0 +1,8 @@
+{
+"name": "mean",
+"version": "0.3.0", 
+    "dependencies": {
+    "ng-file-upload": "latest",
+
+  }
+}

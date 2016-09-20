@@ -11,10 +11,13 @@
   "dependencies": {
     "aws-sdk": "^2.6.1",
     "body-parser": "^1.14.1",
+    "bower": "^1.7.9",
     "consolidate": "^0.14.1",
     "cors": "^2.7.1",
     "easyjson": "^0.1.2",
     "express": "^4.13.3",
+    "form-data": "^2.0.0",
+    "formidable": "^1.0.17",
     "nodemailer": "^2.6.0"
   }
 }

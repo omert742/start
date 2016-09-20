@@ -1,10 +1,13 @@
 var express = require("express");
-var app = express();
 var cors = require("cors");
 var bodyParser = require("body-parser");
 var fs = require('fs');
 var engines = require('consolidate');
 var nodemailer = require('nodemailer');
+var formidable = require('formidable');
+var path = require('path');
+var app = express();
+
 
 app.use(bodyParser.json());  // add the app the option to parse data that send to the app on json type
 app.use(bodyParser.urlencoded({ extended: false })); // allways false (use only for real big amout of data)
@@ -117,8 +120,9 @@ app.get("/get_my_links", function(req, res) { // router that open
     
     
 });
-app.post("/check_file_exists", function(req, res) { // handle post for that page 
-    checkFileExists(req);    
+app.post("/check_file_exists", function(req, res) { // handle post for that page
+    checkFileExists(req.body.fileName);
+    
 });
 app.post("/forgot_password", function(req, res) { // handle post for that page 
         forgotPassword(req.body);
@@ -297,7 +301,7 @@ function newMember(new_obj){ // add new user the json
      });
 
         }
-function checkFileExists(req){ // check if the file name is exists on the s3 bucket
+function checkFileExists(req_key){ // check if the file name is exists on the s3 bucket
     var fs = require('fs');
     var allKeys = [];
     var s3 = new AWS.S3(); 
@@ -317,7 +321,7 @@ function checkFileExists(req){ // check if the file name is exists on the s3 buc
       else {           
             var run = 1;
           for(var i = 0 ; i< data.Contents.length && run == 1; i++){
-                 if( data.Contents[i].Key.trim() == req.body.fileName.trim())
+                 if( data.Contents[i].Key.trim() == req_key.trim())
                   {
                       a=1;
                       run= 0;
@@ -326,12 +330,13 @@ function checkFileExists(req){ // check if the file name is exists on the s3 buc
           
 
             }
-            if(a==1){
-    
+            if(a==1){//exists
+                
               flagChecker[3] = 1 ;
 
             }
-        else{
+        else{// not exsists
+            
           flagChecker[3] = 0 ;
             }
         

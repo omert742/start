@@ -1,5 +1,4 @@
 <!--    javascript-->
-    <script src="/js/jquery.min.js"></script>
     <script src="/js/scriptAngular.js"></script>
 <!--    css-->
 
@@ -28,11 +27,19 @@
 
 <div id="addFilesBox" class="container">
  <dt> Add New File </dt>
-<!--<input value="Choose Files" type="file" id="myFiles" multiple size="50" /> -->
 <h3>File Name :</h3>
 <input  class="inputIdPass" type="type" onchange="checkOnChange()" value="" id="fileName" placeholder="Enter File Name" required /> 
+    
+
 <button onclick="checkFileNameExists()">Check If File Name Excists</button>    
 <h3>File Path :</h3>
+    
+    
+    
+<div ngf-select="vm.upload($file)">
+    
+</div>    
+    
 <input class="inputIdPass" type="type" id="filePath" placeholder="Enter File Path" required/> 
 <!--<img id="addImage" src="" height="auto" alt="Image preview...">-->
 
