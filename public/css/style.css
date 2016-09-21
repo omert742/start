@@ -17,6 +17,10 @@ h1 {
     height: auto;
 }
 
+.hide{
+    display:none;
+}
+
 body {
     
     background-image: url("bodyimg.jpg");

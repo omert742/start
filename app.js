@@ -23,7 +23,7 @@ app.use(cors()); // allow other web and pages to read from my app
 
 
 
-var userIndex = 2;
+var userIndex = 0;
 var skierTerms = [
  
 ]; // my activitys
@@ -61,8 +61,6 @@ app.use(function(req, res, next) {
 
 	next();
 });
-
-
 app.get('/sign-s3', (req, res) => {
   const s3 = new AWS.S3();
   const fileName = req.query['file-name'];
@@ -98,10 +96,6 @@ app.get('/sign-s3', (req, res) => {
     res.end();
   });
 });
-
-
-
-
 app.get('/public/sites/add_file.html', function(request, response) {
     response.render('public/sites/add_file.html');
 });
@@ -127,7 +121,6 @@ app.get('/public/sites/showdictionary.html', function(request, response) {
     response.render('public/sites/dictionary.html');
 });
 app.get("/dictionary-api", function(req, res) { // router that open 
-
     fs.readFile('public/activity-data.json', 'utf8', function (err, data) {  
             skierTerms = [];
             var obj = JSON.parse(data);
@@ -303,7 +296,7 @@ function newMember(new_obj){ // add new user the json
         fs.readFile('public/activity-data.json', 'utf8', function (err, data) {  
             var obj = JSON.parse(data); // data 
             
-       
+
                 
              var run = 1 ;// check if user exists
             // if it does make flagChecker[1] = 1;
@@ -317,13 +310,19 @@ function newMember(new_obj){ // add new user the json
                         }    
                 };
             
+            
+
             //if user is not exists , create him
             if(flagChecker[1] == 2 )
                 {
-                     var exmapleObj = obj.users[userIndex];
+                    
+
+                     var exmapleObj = obj.users[0]; // take json un user index
                     var configJSONExample = JSON.stringify(exmapleObj);
                     var newObject = configJSONExample;
-                   var obj3 = JSON.parse(configJSONExample); // data 
+
+                    
+                   var obj3 = JSON.parse(newObject); // data 
                     obj3.username = new_obj.username.toLowerCase();
                     obj3.email = new_obj.email.toLowerCase();
                     obj3.password = new_obj.password.toLowerCase();

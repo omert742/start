@@ -13,7 +13,7 @@ $routeProvider
 })
 .when('/register',{
     templateUrl: 'sites/register.html',
-    controller: 'registerController'
+    controller: 'emptyController'
 })
 .when('/online_chat',{
     templateUrl: 'sites/online_chat.html',
@@ -25,11 +25,11 @@ $routeProvider
 })
 .when('/login',{
     templateUrl: 'sites/login.html',
-    controller: 'login'
+    controller: 'emptyController'
 })
 .when('/acount_not_exsists',{
     templateUrl: 'sites/acount_not_exsists.html',
-    controller: 'notExists'
+    controller: 'emptyController'
 })
 .when('/add_file',{
         templateUrl: 'sites/add_file.html',
@@ -50,10 +50,7 @@ $routeProvider
 })
 .when('/forgot_mypass',{
         templateUrl: 'sites/forgot_mypass.html'
-})
-
-
-    
+})    
 });
 NodeAngularApp.controller('mainController',function(){
     if(localStorage.userIndex == undefined)
@@ -62,35 +59,20 @@ NodeAngularApp.controller('mainController',function(){
         }
 });
 
-NodeAngularApp.controller('notExists',function(){
+NodeAngularApp.controller('emptyController',function(){
 
 });
 NodeAngularApp.controller('logout',function(){
 localStorage.removeItem("userIndex");
 });
 NodeAngularApp.controller('add_file',function($scope,$http){
-//    
-//        $scope.upload = function(file){
-//            $http({url:})
-//                   data = file
-//        }
-//        
        if(localStorage.userIndex == undefined)
         {
             window.location = '/#/acount_not_exsists'
-        }else
-        {
-            //checkFileNameExists();
         }
 });
-NodeAngularApp.controller('login',function(){
-//Login();    
+ 
 
-
-});    
-NodeAngularApp.controller('registerController',function(){
-//newMember();    
-});
 NodeAngularApp.controller('showDictionary',function(){
            if(localStorage.userIndex == undefined)
         {
@@ -115,13 +97,15 @@ NodeAngularApp.controller('showFiles',function(){
 
 
 function newMember() { // got the json file on terms .
-    var Uname = $('#reg_username').val();
-    var Umail = $('#reg_email').val();
-        var Upassword = $('#reg_password1').val();
-            var Upassword2 = $('#reg_password2').val();
+    
+    var Uname = angular.element('#reg_username').val();
+    var Umail = angular.element('#reg_email').val();
+    var Upassword = angular.element('#reg_password1').val();
+    var Upassword2 = angular.element('#reg_password2').val();
+
         if(Uname.length != 0 && Upassword.length != 0 && Upassword2.length != 0 && Umail.length != 0 && Upassword === Upassword2 && Upassword.length >= 5 && Upassword2.length >= 5 )
             {
-            $.post('/register', {username: $('#reg_username').val(),password: $('#reg_password1').val(),email : Umail});
+            $.post('/register', {username: Uname,password: Upassword,email : Umail});
                $.ajax({
                    type: "GET",
                    url: "resultArray",
@@ -130,7 +114,7 @@ function newMember() { // got the json file on terms .
                     $.getJSON('/resultArray', function(terms){
 
                          if(terms[1] == 1) {
-                            var my_dialog = document.getElementById('register_dialog');
+                     var my_dialog = document.getElementById('register_dialog');
                               my_dialog.className = 'alert alert-danger'; 
                                 my_dialog.innerHTML = 'Registierison id allready exists';
                                 my_dialog.style.visibility = "visible";
@@ -139,11 +123,11 @@ function newMember() { // got the json file on terms .
                                 }, 1000);
 
                         }else {
-                            $('#reg_username').val('');
-                            $('#reg_email').val('');
-                            $('#reg_password1').val('');
-                            $('#reg_password2').val('');
-                            var my_dialog = document.getElementById('register_dialog');
+        angular.element('#reg_username').val('');
+        angular.element('#reg_email').val('');
+        angular.element('#reg_password1').val('');
+        angular.element('#reg_password2').val('');
+                     var my_dialog = document.getElementById('register_dialog');
                              my_dialog.className = 'alert alert-success';       
                             my_dialog.innerHTML = 'Sueceessfully Registiered';
                                     my_dialog.style.visibility = "visible";
@@ -159,14 +143,22 @@ function newMember() { // got the json file on terms .
                 
 
     }else{
-        alert("Eror 404 - \n The filed are not full \n Or the passwords are not the same \n Or the password is short the 6 letters")
+                     var my_dialog = document.getElementById('register_dialog');
+
+                              my_dialog.className = 'alert alert-danger'; 
+                                my_dialog.innerHTML = 'The filed are not full \n Or the passwords are not the same \n Or the password is short the 6 letters';
+                                my_dialog.style.visibility = "visible";
+                        setTimeout(function() {
+                                    my_dialog.style.visibility = "hidden";
+                                }, 1000);
     }
     
    
     
 }
 function showFilesF(){
-   var ulist = document.getElementById("addFilesBox");
+    
+   var ulist = angular.element("#addFilesBox");
               $.ajax({
                    type: "GET",
                    url: "get_my_links",
@@ -242,8 +234,9 @@ function printTerms(terms) { // got the json file on terms .
 
 }      
 function Login() { // got the json file on terms .
-    var Uname = $('#Log_username').val();
-    var Upassword = $('#Log_password').val();
+
+   var Uname = angular.element("#Log_username").val();
+   var Upassword = angular.element("#Log_password").val();
 
         if(Uname.length != 0 || Upassword.length != 0 )
             {
@@ -310,9 +303,9 @@ function AddNewTerm(){
     
     $('#addText').submit(function (e) {
          e.preventDefault();
-        
-        var getName = $('#name_activity').val();
-        var getActivity = $('#activity_description').val();
+           var getName = angular.element("#name_activity").val();
+   var getActivity = angular.element("#activity_description").val();
+
         if(getName.length != 0 && getActivity.length != 0){
         $.post('/dictionary-api', {nameActivity: getName, Activity: getActivity});  
         this.reset();
@@ -339,7 +332,8 @@ function AddNewTerm(){
 })
 } 
 function sendMyPassById(){
-        var Uname = $('#for_username').val();
+    
+               var Uname = angular.element("#for_username").val();
     if(Uname.length >= 0){
             $.post('/forgot_password', {username: Uname});
         
@@ -352,14 +346,14 @@ function sendMyPassById(){
                    async: true,
                    success: function() {                     
                     $.getJSON('/resultArray', function(terms){
-                            console.log("terms[6] "+terms[6]);
-                            console.log("terms[6].length "+terms[6].length);
+
                      if(terms[6].length > 0) {
                               var my_dialog = document.getElementById('forgot_pass_dialog');
                               my_dialog.className = 'alert alert-success'; 
                                 my_dialog.innerHTML = 'The password sent to your email';
                                 my_dialog.style.visibility = "visible";
-                                $('#for_username').val('');
+                                angular.element("#for_username").val('');
+
 
                         setTimeout(function() {
                             
@@ -407,8 +401,8 @@ function sendMyPassById(){
         }
 }
 function onChangeFile(){
-     console.log("hey")
-         const files = document.getElementById('file-input').files;
+
+         const files = angular.element('#file-input').files;
     const file = files[0];
     if(file == null){
       return alert('No file selected.');
@@ -439,12 +433,12 @@ function uploadFile(file, signedRequest, url){
       if(xhr.status === 200){
 if (file.name.match(/\.(jpg|jpeg|png|gif)$/))
     {
-        console.log('img')
-        document.getElementById('preview').src = url;
+        angular.element('#preview').src = url;
+
     }
 else
     {
-       document.getElementById('preview').src = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Upload.svg/2000px-Upload.svg.png"; 
+                angular.element('#preview').src = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Upload.svg/2000px-Upload.svg.png";
     }
        // document.getElementById('avatar-url').value = url;
           
