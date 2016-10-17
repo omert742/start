@@ -131,6 +131,19 @@ app.get("/get_my_links", function(req, res) { // router that open
     });                       
                 
 });
+
+app.get("/get_data_from_android", function(req, res) { // router that open     
+  var my_links = [
+      {"firstName":"John", "lastName":"Doe"}, 
+    {"firstName":"Anna","lastName":"Smith"},
+    {"firstName":"Peter", "lastName":"Jones"}
+  ];
+
+        res.json(my_links);
+    });                       
+                
+
+
 app.post("/forgot_password", function(req, res) { // handle post for that page 
         forgotPassword(req.body,function(value) {
                     res.end(value);
