@@ -264,7 +264,7 @@ function Login() { // got the json file on terms .
 function AddNewTerm(){
     
     $('#addText').submit(function (e) {
-    e.preventDefault();
+   // e.preventDefault();
     var getName = angular.element("#name_activity").val();
     var getActivity = angular.element("#activity_description").val();
     if(getName.length != 0 && getActivity.length != 0){

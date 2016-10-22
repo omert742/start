@@ -134,9 +134,20 @@ app.get("/get_my_links", function(req, res) { // router that open
 
 app.get("/get_data_from_android", function(req, res) { // router that open     
   var my_links = [
-      {"firstName":"John", "lastName":"Doe"}, 
-    {"firstName":"Anna","lastName":"Smith"},
-    {"firstName":"Peter", "lastName":"Jones"}
+      {"name":"Bar refaeli", "job":"Model","url_adress":"http://www.fashiongonerogue.com/wp-content/uploads/2015/10/Bar-Refaeli-GQ-Germany-Hot-Swimsuit-Pictures02.jpg" }, 
+          {"name":"Bar refaeli", "job":"Model","url_adress":"http://www.fashiongonerogue.com/wp-content/uploads/2015/10/Bar-Refaeli-GQ-Germany-Hot-Swimsuit-Pictures02.jpg" }, 
+            {"name":"Bar refaeli", "job":"Model","url_adress":"http://www.fashiongonerogue.com/wp-content/uploads/2015/10/Bar-Refaeli-GQ-Germany-Hot-Swimsuit-Pictures02.jpg" }, 
+            {"name":"Bar refaeli", "job":"Model","url_adress":"http://www.fashiongonerogue.com/wp-content/uploads/2015/10/Bar-Refaeli-GQ-Germany-Hot-Swimsuit-Pictures02.jpg" }, 
+            {"name":"Bar refaeli", "job":"Model","url_adress":"http://www.fashiongonerogue.com/wp-content/uploads/2015/10/Bar-Refaeli-GQ-Germany-Hot-Swimsuit-Pictures02.jpg" }, 
+            {"name":"Bar refaeli", "job":"Model","url_adress":"http://www.fashiongonerogue.com/wp-content/uploads/2015/10/Bar-Refaeli-GQ-Germany-Hot-Swimsuit-Pictures02.jpg" }, 
+            {"name":"Bar refaeli", "job":"Model","url_adress":"http://www.fashiongonerogue.com/wp-content/uploads/2015/10/Bar-Refaeli-GQ-Germany-Hot-Swimsuit-Pictures02.jpg" }, 
+            {"name":"Bar refaeli", "job":"Model","url_adress":"http://www.fashiongonerogue.com/wp-content/uploads/2015/10/Bar-Refaeli-GQ-Germany-Hot-Swimsuit-Pictures02.jpg" }, 
+            {"name":"Bar refaeli", "job":"Model","url_adress":"http://www.fashiongonerogue.com/wp-content/uploads/2015/10/Bar-Refaeli-GQ-Germany-Hot-Swimsuit-Pictures02.jpg" }, 
+            {"name":"Bar refaeli", "job":"Model","url_adress":"http://www.fashiongonerogue.com/wp-content/uploads/2015/10/Bar-Refaeli-GQ-Germany-Hot-Swimsuit-Pictures02.jpg" }, 
+            {"name":"Bar refaeli", "job":"Model","url_adress":"http://www.fashiongonerogue.com/wp-content/uploads/2015/10/Bar-Refaeli-GQ-Germany-Hot-Swimsuit-Pictures02.jpg" }, 
+            {"name":"Bar refaeli", "job":"Model","url_adress":"http://www.fashiongonerogue.com/wp-content/uploads/2015/10/Bar-Refaeli-GQ-Germany-Hot-Swimsuit-Pictures02.jpg" }, 
+            {"name":"Bar refaeli", "job":"Model","url_adress":"http://www.fashiongonerogue.com/wp-content/uploads/2015/10/Bar-Refaeli-GQ-Germany-Hot-Swimsuit-Pictures02.jpg" }
+      
   ];
 
         res.json(my_links);
