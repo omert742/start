@@ -134,20 +134,73 @@ app.get("/get_my_links", function(req, res) { // router that open
 
 app.get("/get_data_from_android", function(req, res) { // router that open     
   var my_links = [
-      {"name":"Bar refaeli", "job":"Model","url_adress":"http://www.fashiongonerogue.com/wp-content/uploads/2015/10/Bar-Refaeli-GQ-Germany-Hot-Swimsuit-Pictures02.jpg" }, 
-          {"name":"Bar refaeli", "job":"Model","url_adress":"http://www.fashiongonerogue.com/wp-content/uploads/2015/10/Bar-Refaeli-GQ-Germany-Hot-Swimsuit-Pictures02.jpg" }, 
-            {"name":"Bar refaeli", "job":"Model","url_adress":"http://www.fashiongonerogue.com/wp-content/uploads/2015/10/Bar-Refaeli-GQ-Germany-Hot-Swimsuit-Pictures02.jpg" }, 
-            {"name":"Bar refaeli", "job":"Model","url_adress":"http://www.fashiongonerogue.com/wp-content/uploads/2015/10/Bar-Refaeli-GQ-Germany-Hot-Swimsuit-Pictures02.jpg" }, 
-            {"name":"Bar refaeli", "job":"Model","url_adress":"http://www.fashiongonerogue.com/wp-content/uploads/2015/10/Bar-Refaeli-GQ-Germany-Hot-Swimsuit-Pictures02.jpg" }, 
-            {"name":"Bar refaeli", "job":"Model","url_adress":"http://www.fashiongonerogue.com/wp-content/uploads/2015/10/Bar-Refaeli-GQ-Germany-Hot-Swimsuit-Pictures02.jpg" }, 
-            {"name":"Bar refaeli", "job":"Model","url_adress":"http://www.fashiongonerogue.com/wp-content/uploads/2015/10/Bar-Refaeli-GQ-Germany-Hot-Swimsuit-Pictures02.jpg" }, 
-            {"name":"Bar refaeli", "job":"Model","url_adress":"http://www.fashiongonerogue.com/wp-content/uploads/2015/10/Bar-Refaeli-GQ-Germany-Hot-Swimsuit-Pictures02.jpg" }, 
-            {"name":"Bar refaeli", "job":"Model","url_adress":"http://www.fashiongonerogue.com/wp-content/uploads/2015/10/Bar-Refaeli-GQ-Germany-Hot-Swimsuit-Pictures02.jpg" }, 
-            {"name":"Bar refaeli", "job":"Model","url_adress":"http://www.fashiongonerogue.com/wp-content/uploads/2015/10/Bar-Refaeli-GQ-Germany-Hot-Swimsuit-Pictures02.jpg" }, 
-            {"name":"Bar refaeli", "job":"Model","url_adress":"http://www.fashiongonerogue.com/wp-content/uploads/2015/10/Bar-Refaeli-GQ-Germany-Hot-Swimsuit-Pictures02.jpg" }, 
-            {"name":"Bar refaeli", "job":"Model","url_adress":"http://www.fashiongonerogue.com/wp-content/uploads/2015/10/Bar-Refaeli-GQ-Germany-Hot-Swimsuit-Pictures02.jpg" }, 
-            {"name":"Bar refaeli", "job":"Model","url_adress":"http://www.fashiongonerogue.com/wp-content/uploads/2015/10/Bar-Refaeli-GQ-Germany-Hot-Swimsuit-Pictures02.jpg" }
       
+      {"name":"Bar refaeli", "job":"Model","url_adress":"http://www.fashiongonerogue.com/wp-content/uploads/2015/10/Bar-Refaeli-GQ-Germany-Hot-Swimsuit-Pictures02.jpg" }, 
+      
+          {"name":"Guy ron", "job":"Android Programmer","url_adress":"https://s15.postimg.org/xkhjf9vmj/guy_img.png" }, 
+      
+          {"name":"Leonardo de vinci", "job":"Inventor","url_adress":"http://www.kingsgalleries.com/wp-content/uploads/2010/07/Leonardo-Da-Vinci.jpg" }, 
+      
+          {"name":"Barack obama", "job":"President","url_adress":"http://specials-images.forbesimg.com/imageserve/5637de5ae4b0ffa7afe69130/320x486.jpg?fit=scale&background=000000" }, 
+      
+          {"name":"Bob marley", "job":"Singer","url_adress":"http://cdn.inquisitr.com/wp-content/uploads/2014/12/fineartamerica.jpg" }, 
+      
+      
+          {"name":"Naruto uzumaki", "job":"Ninja","url_adress":"https://s-media-cache-ak0.pinimg.com/736x/3e/c7/9a/3ec79ad2583be9bb5b4accbd2c85c6a0.jpg" }, 
+      
+      
+          {"name":"Lebron james", "job":"Basketball Player","url_adress":"http://i.forbesimg.com/media/lists/people/lebron-james_416x416.jpg" }, 
+      
+      
+          {"name":"Harry potter", "job":"Wizard","url_adress":"http://www.pngall.com/wp-content/uploads/2016/04/Harry-Potter-Transparent.png" }, 
+      
+      
+          {"name":"Angelina jolie", "job":"Actor","url_adress":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_Jq6Bdl5K4k0Q8tM2tc7RtK5Navo4zxHsOUhLhLlRj4HBZNgd" }, 
+       {"name":"Bar refaeli", "job":"Model","url_adress":"http://www.fashiongonerogue.com/wp-content/uploads/2015/10/Bar-Refaeli-GQ-Germany-Hot-Swimsuit-Pictures02.jpg" }, 
+      
+          {"name":"Guy ron", "job":"Android Programmer","url_adress":"https://s15.postimg.org/xkhjf9vmj/guy_img.png" }, 
+      
+          {"name":"Leonardo de vinci", "job":"Inventor","url_adress":"http://www.kingsgalleries.com/wp-content/uploads/2010/07/Leonardo-Da-Vinci.jpg" }, 
+      
+          {"name":"Barack obama", "job":"President","url_adress":"http://specials-images.forbesimg.com/imageserve/5637de5ae4b0ffa7afe69130/320x486.jpg?fit=scale&background=000000" }, 
+      
+          {"name":"Bob marley", "job":"Singer","url_adress":"http://cdn.inquisitr.com/wp-content/uploads/2014/12/fineartamerica.jpg" }, 
+      
+      
+          {"name":"Naruto uzumaki", "job":"Ninja","url_adress":"https://s-media-cache-ak0.pinimg.com/736x/3e/c7/9a/3ec79ad2583be9bb5b4accbd2c85c6a0.jpg" }, 
+      
+      
+          {"name":"Lebron james", "job":"Basketball Player","url_adress":"http://i.forbesimg.com/media/lists/people/lebron-james_416x416.jpg" }, 
+      
+      
+          {"name":"Harry potter", "job":"Wizard","url_adress":"http://www.pngall.com/wp-content/uploads/2016/04/Harry-Potter-Transparent.png" }, 
+      
+      
+          {"name":"Angelina jolie", "job":"Actor","url_adress":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_Jq6Bdl5K4k0Q8tM2tc7RtK5Navo4zxHsOUhLhLlRj4HBZNgd" }, 
+       {"name":"Bar refaeli", "job":"Model","url_adress":"http://www.fashiongonerogue.com/wp-content/uploads/2015/10/Bar-Refaeli-GQ-Germany-Hot-Swimsuit-Pictures02.jpg" }, 
+      
+          {"name":"Guy ron", "job":"Android Programmer","url_adress":"https://s15.postimg.org/xkhjf9vmj/guy_img.png" }, 
+      
+          {"name":"Leonardo de vinci", "job":"Inventor","url_adress":"http://www.kingsgalleries.com/wp-content/uploads/2010/07/Leonardo-Da-Vinci.jpg" }, 
+      
+          {"name":"Barack obama", "job":"President","url_adress":"http://specials-images.forbesimg.com/imageserve/5637de5ae4b0ffa7afe69130/320x486.jpg?fit=scale&background=000000" }, 
+      
+          {"name":"Bob marley", "job":"Singer","url_adress":"http://cdn.inquisitr.com/wp-content/uploads/2014/12/fineartamerica.jpg" }, 
+      
+      
+          {"name":"Naruto uzumaki", "job":"Ninja","url_adress":"https://s-media-cache-ak0.pinimg.com/736x/3e/c7/9a/3ec79ad2583be9bb5b4accbd2c85c6a0.jpg" }, 
+      
+      
+          {"name":"Lebron james", "job":"Basketball Player","url_adress":"http://i.forbesimg.com/media/lists/people/lebron-james_416x416.jpg" }, 
+      
+      
+          {"name":"Harry potter", "job":"Wizard","url_adress":"http://www.pngall.com/wp-content/uploads/2016/04/Harry-Potter-Transparent.png" }, 
+      
+      
+          {"name":"Angelina jolie", "job":"Actor","url_adress":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_Jq6Bdl5K4k0Q8tM2tc7RtK5Navo4zxHsOUhLhLlRj4HBZNgd" }
+      
+    
+
   ];
 
         res.json(my_links);
